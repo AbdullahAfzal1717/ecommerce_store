@@ -29,6 +29,7 @@ import ProductsPage from "@app/pages/storefornt/products/ProductsPage";
 import CheckoutPage from "@app/pages/storefornt/checkout/CheckoutPage";
 import UserOrdersPage from "@app/pages/storefornt/user/UserOrdersPage"; // Create this next
 import UserDashboard from "@app/pages/storefornt/user/UserDashboard"; // Create this next
+import AdminDashboard from "@app/pages/admin/dashboard/AdminDashboard";
 
 const routes = [
   // 1. STOREFRONT & USER ACCOUNT
@@ -48,7 +49,7 @@ const routes = [
         path: "account",
         element: <Page Component={UserAccountLayout} hoc={withAuth} />,
         children: [
-          { path: "dashboard", element: <UserDashboard /> },
+          { path: "", element: <UserDashboard /> },
           { path: "orders", element: <UserOrdersPage /> },
           { path: "profile", element: <ProfilePage /> }, // Reusing ProfilePage CRUD
         ],
@@ -61,11 +62,12 @@ const routes = [
     path: "/admin",
     element: <Page Component={StretchedLayout} hoc={withAdmin} />,
     children: [
-      { path: "", element: <AdminOrdersPage /> },
+      { path: "", element: <AdminDashboard /> },
       { path: "categories", element: <CategoryPage /> },
       { path: "subcategories", element: <SubCategoryPage /> },
       { path: "products", element: <ProductPage /> },
       { path: "profile", element: <ProfilePage /> },
+      { path: "orders", element: <AdminOrdersPage /> },
     ],
   },
 

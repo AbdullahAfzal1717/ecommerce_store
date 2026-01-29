@@ -23,7 +23,7 @@ export const UserAccountLayout = () => {
     {
       label: "Dashboard",
       icon: <DashboardOutlinedIcon />,
-      path: "/account/dashboard",
+      path: "/account",
     },
     {
       label: "My Orders",

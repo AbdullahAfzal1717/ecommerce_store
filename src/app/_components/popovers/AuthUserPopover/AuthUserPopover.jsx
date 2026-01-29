@@ -68,7 +68,7 @@ const AuthUserPopover = () => {
         <nav>
           <List disablePadding sx={{ pb: 1 }}>
             {/* PERSONAL AREA: Accessible by everyone */}
-            <ListItemButton onClick={() => navigate("/account/dashboard")}>
+            <ListItemButton onClick={() => navigate("/account")}>
               <ListItemIcon>
                 <PersonOutlineIcon />
               </ListItemIcon>

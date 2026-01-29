@@ -5,8 +5,12 @@ export function getMenus() {
   const { t } = useTranslation();
   return [
     {
-      label: t("sidebar.menu.sample"),
+      label: "Menu",
       children: [
+        {
+          path: "/admin",
+          label: "Dashboard",
+        },
         {
           path: "/admin/categories",
           label: "Category",
@@ -18,6 +22,10 @@ export function getMenus() {
         {
           path: "/admin/products",
           label: "Product",
+        },
+        {
+          path: "/admin/orders",
+          label: "Orders",
         },
         {
           path: "/",
