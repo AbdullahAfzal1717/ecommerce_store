@@ -21,4 +21,9 @@ export const orderService = {
     const response = await api.get("/orders/sales-stats");
     return response.data;
   },
+  getUserAnalytics: async () => {
+    // Assuming you use axios or a custom fetch wrapper
+    const response = await api.get("/orders/user-stats");
+    return response.data;
+  },
 };

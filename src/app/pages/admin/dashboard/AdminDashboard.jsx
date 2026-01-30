@@ -18,6 +18,8 @@ import { orderService } from "@app/_services/order.service";
 import { useNavigate } from "react-router-dom";
 import { SalesOverview } from "@app/_components/widgets/SalesOverView";
 import { Orders } from "@app/_components/widgets/Orders"; // Your small green widget
+import { TotalRevenueThisYear } from "@app/_components/widgets/TotalRevenue";
+import { OrdersReport } from "@app/_components/widgets/OrderReport";
 
 const StatCard = ({ title, value, icon, color }) => (
   <Paper elevation={0} sx={{ p: 3, border: "1px solid #eee", borderRadius: 4 }}>
@@ -56,7 +58,6 @@ const AdminDashboard = () => {
       try {
         setLoading(true);
         const res = await orderService.getDashboardAnalytics();
-        console.log(res); // The new combined API
         setDashboardData(res);
       } catch (err) {
         console.error("Dashboard Load Failed", err);
@@ -76,112 +77,85 @@ const AdminDashboard = () => {
 
   return (
     <Box sx={{ p: 4 }}>
-      {/* Header Section */}
+      {/* Header & Quick Actions Row */}
       <Stack
-        direction="row"
+        direction={{ xs: "column", md: "row" }}
         justifyContent="space-between"
         alignItems="center"
         mb={4}
+        spacing={2}
       >
         <Box>
           <Typography variant="h4" fontWeight="800">
             Business Overview
           </Typography>
           <Typography color="text.secondary">
-            Welcome back, Administrator {authUser?.username}
+            Welcome back, {authUser?.username}
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<InventoryIcon />}
-          onClick={() => navigate("/admin/products")}
-          sx={{
-            borderRadius: 2,
-            bgcolor: "black",
-            "&:hover": { bgcolor: "#333" },
-          }}
-        >
-          Add Product
-        </Button>
+
+        {/* Compact Quick Actions */}
+        <Stack direction="row" spacing={1}>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => navigate("/admin/categories")}
+          >
+            Categories
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => navigate("/admin/orders")}
+          >
+            Orders
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<InventoryIcon />}
+            onClick={() => navigate("/admin/products")}
+            sx={{ bgcolor: "black", "&:hover": { bgcolor: "#333" } }}
+          >
+            Add Product
+          </Button>
+        </Stack>
       </Stack>
 
-      {/* Summary Cards - Using data from our single API call */}
-      <Grid container spacing={3} mb={5}>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="Total Revenue"
-            value={`Rs. ${dashboardData?.summary?.totalRevenue}`}
-            icon={<PaidIcon />}
-            color="#2e7d32"
+      {/* Row 1: Small Visual Cards (Total Revenue & Order Volume) */}
+      <Grid container spacing={3} mb={4}>
+        <Grid item xs={12} md={6}>
+          <TotalRevenueThisYear
+            revenue={dashboardData?.summary?.totalRevenue}
+            subheader="Total Sales Revenue"
+            chartData={dashboardData?.chartData}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid item xs={12} md={6}>
           <Orders
             title="Order Volume"
             count={dashboardData?.summary?.totalOrders}
             data={dashboardData?.chartData}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="Needs Action"
-            value={dashboardData?.summary?.pendingOrders}
-            icon={<PendingActionsIcon />}
-            color="#ed6c02"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="Completed"
-            value={dashboardData?.summary?.deliveredOrders}
-            icon={<InventoryIcon />}
-            color="#1976d2"
-          />
-        </Grid>
       </Grid>
 
-      <Grid container spacing={4}>
-        {/* BIG SALES CHART - Pass chartData as a prop */}
+      {/* Row 2: Main Analytics (Sales Overview & Radar Report) */}
+      <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <SalesOverview
-            title="Sales Overview"
+            title="Sales Performance"
             data={dashboardData?.chartData}
           />
         </Grid>
 
-        {/* SMALL ORDERS WIDGET - Also uses the same data */}
         <Grid item xs={12} md={4}>
-          <Paper
-            sx={{
-              p: 3,
-              borderRadius: 4,
-              height: "100%",
-              border: "1px solid #eee",
-            }}
-          >
-            <Typography variant="h6" fontWeight="700" mb={2}>
-              Quick Actions
-            </Typography>
-            <Stack spacing={2}>
-              <Button
-                fullWidth
-                variant="outlined"
-                onClick={() => navigate("/admin/categories")}
-              >
-                Manage Categories
-              </Button>
-              <Button
-                fullWidth
-                variant="outlined"
-                onClick={() => navigate("/admin/orders")}
-              >
-                View All Orders
-              </Button>
-              <Button fullWidth variant="outlined" color="error">
-                System Logs
-              </Button>
-            </Stack>
-          </Paper>
+          <OrdersReport
+            title="Order Status"
+            subheader="Completed vs Pending"
+            data={dashboardData?.reportData}
+            chartHeight={280} // Radar chart looks great when it has room to breathe here
+          />
         </Grid>
       </Grid>
     </Box>

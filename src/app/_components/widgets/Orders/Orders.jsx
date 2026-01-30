@@ -18,6 +18,12 @@ function Orders({ title, count, data }) {
         </Typography>
       }
       headerSx={{ pb: 0 }}
+      sx={{
+        height: "100%", // Force card to fill the Grid height
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
     >
       <Div sx={{ mt: -2.5 }}>
         {/* It uses the same chartData from the main dashboard */}
