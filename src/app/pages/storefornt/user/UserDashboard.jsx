@@ -53,7 +53,7 @@ const UserDashboard = () => {
   useEffect(() => {
     // Logic to calculate stats from orders
     const fetchStats = async () => {
-      const res = await orderService.getMyOrders(); 
+      const res = await orderService.getMyOrders();
       const orders = res.data.data;
       const total = orders.reduce(
         (sum, order) => sum + (order.totalAmount || 0),

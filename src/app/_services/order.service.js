@@ -16,4 +16,9 @@ export const orderService = {
     const response = await api.patch(`/orders/${orderId}/status`, { status });
     return response.data;
   },
+  getDashboardAnalytics: async () => {
+    // Assuming you use axios or a custom fetch wrapper
+    const response = await api.get("/orders/sales-stats");
+    return response.data;
+  },
 };

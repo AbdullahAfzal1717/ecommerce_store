@@ -16,8 +16,9 @@ import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import { useAuth } from "@app/_components/_core/AuthProvider/hooks";
 import { orderService } from "@app/_services/order.service";
 import { useNavigate } from "react-router-dom";
+import { SalesOverview } from "@app/_components/widgets/SalesOverView";
+import { Orders } from "@app/_components/widgets/Orders"; // Your small green widget
 
-// Reusing your StatCard design for consistency
 const StatCard = ({ title, value, icon, color }) => (
   <Paper elevation={0} sx={{ p: 3, border: "1px solid #eee", borderRadius: 4 }}>
     <Stack direction="row" spacing={2} alignItems="center">
@@ -48,56 +49,34 @@ const AdminDashboard = () => {
   const { authUser } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({
-    totalRevenue: 0,
-    totalOrders: 0,
-    pendingOrders: 0,
-    deliveredOrders: 0,
-  });
+  const [dashboardData, setDashboardData] = useState(null);
 
   useEffect(() => {
-    const fetchAdminStats = async () => {
+    const fetchAllData = async () => {
       try {
         setLoading(true);
-        // Using getAllOrders because Admin sees EVERYTHING
-        const res = await orderService.getAllOrders();
-        const allOrders = res.data;
-
-        const revenue = allOrders
-          .filter((o) => o.orderStatus !== "Cancelled")
-          .reduce((sum, order) => sum + (order.totalAmount || 0), 0);
-
-        const pending = allOrders.filter(
-          (o) => o.orderStatus === "Pending" || o.orderStatus === "Processing"
-        ).length;
-        const delivered = allOrders.filter(
-          (o) => o.orderStatus === "Delivered"
-        ).length;
-
-        setStats({
-          totalRevenue: revenue.toFixed(2),
-          totalOrders: allOrders.length,
-          pendingOrders: pending,
-          deliveredOrders: delivered,
-        });
+        const res = await orderService.getDashboardAnalytics();
+        console.log(res); // The new combined API
+        setDashboardData(res);
       } catch (err) {
-        console.error("Failed to load admin stats", err);
+        console.error("Dashboard Load Failed", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchAdminStats();
+    fetchAllData();
   }, []);
 
   if (loading)
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", p: 5 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", p: 10 }}>
         <CircularProgress />
       </Box>
     );
 
   return (
     <Box sx={{ p: 4 }}>
+      {/* Header Section */}
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -126,27 +105,27 @@ const AdminDashboard = () => {
         </Button>
       </Stack>
 
+      {/* Summary Cards - Using data from our single API call */}
       <Grid container spacing={3} mb={5}>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
             title="Total Revenue"
-            value={`$${stats.totalRevenue}`}
+            value={`Rs. ${dashboardData?.summary?.totalRevenue}`}
             icon={<PaidIcon />}
             color="#2e7d32"
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <StatCard
-            title="Total Orders"
-            value={stats.totalOrders}
-            icon={<GroupsIcon />}
-            color="#000000"
+          <Orders
+            title="Order Volume"
+            count={dashboardData?.summary?.totalOrders}
+            data={dashboardData?.chartData}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
             title="Needs Action"
-            value={stats.pendingOrders}
+            value={dashboardData?.summary?.pendingOrders}
             icon={<PendingActionsIcon />}
             color="#ed6c02"
           />
@@ -154,33 +133,23 @@ const AdminDashboard = () => {
         <Grid item xs={12} sm={6} md={3}>
           <StatCard
             title="Completed"
-            value={stats.deliveredOrders}
+            value={dashboardData?.summary?.deliveredOrders}
             icon={<InventoryIcon />}
             color="#1976d2"
           />
         </Grid>
       </Grid>
 
-      <Divider sx={{ mb: 4 }} />
-
       <Grid container spacing={4}>
+        {/* BIG SALES CHART - Pass chartData as a prop */}
         <Grid item xs={12} md={8}>
-          <Paper
-            sx={{
-              p: 3,
-              borderRadius: 4,
-              minHeight: 300,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px dashed #ccc",
-            }}
-          >
-            <Typography color="text.secondary">
-              [ Sales Chart Placeholder - Use Chart.js or Recharts here later ]
-            </Typography>
-          </Paper>
+          <SalesOverview
+            title="Sales Overview"
+            data={dashboardData?.chartData}
+          />
         </Grid>
+
+        {/* SMALL ORDERS WIDGET - Also uses the same data */}
         <Grid item xs={12} md={4}>
           <Paper
             sx={{
