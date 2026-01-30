@@ -45,18 +45,17 @@ const routes = [
       },
 
       // USER PANEL (Nested inside Storefront)
-      {
-        path: "account",
-        element: <Page Component={UserAccountLayout} hoc={withAuth} />,
-        children: [
-          { path: "", element: <UserDashboard /> },
-          { path: "orders", element: <UserOrdersPage /> },
-          { path: "profile", element: <ProfilePage /> }, // Reusing ProfilePage CRUD
-        ],
-      },
     ],
   },
-
+  {
+    path: "account",
+    element: <Page Component={StretchedLayout} hoc={withAuth} />,
+    children: [
+      { path: "", element: <UserDashboard /> },
+      { path: "orders", element: <UserOrdersPage /> },
+      { path: "profile", element: <ProfilePage /> }, // Reusing ProfilePage CRUD
+    ],
+  },
   // 2. ADMIN DASHBOARD
   {
     path: "/admin",

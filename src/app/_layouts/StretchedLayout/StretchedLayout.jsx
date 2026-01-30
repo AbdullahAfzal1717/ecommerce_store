@@ -10,7 +10,7 @@ import { defaultLayoutConfig } from "@app/_config/layouts";
 
 export function StretchedLayout() {
   const location = useLocation();
-  const menus = getMenus();
+  const menus = getMenus(location.pathname);
   return (
     <JumboLayoutProvider layoutConfig={defaultLayoutConfig}>
       <JumboLayout

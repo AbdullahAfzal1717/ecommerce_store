@@ -76,9 +76,7 @@ function StoreHeader() {
                         <AccountCircleOutlined />
                       )
                     }
-                    onClick={() =>
-                      navigate(isAdmin ? "/admin" : "/account/dashboard")
-                    }
+                    onClick={() => navigate(isAdmin ? "/admin" : "/account")}
                     sx={{
                       borderRadius: "8px",
                       textTransform: "none",
@@ -93,9 +91,7 @@ function StoreHeader() {
                 {/* Mobile Icon Toggle */}
                 <IconButton
                   sx={{ display: { xs: "flex", sm: "none" } }}
-                  onClick={() =>
-                    navigate(isAdmin ? "/admin" : "/account/dashboard")
-                  }
+                  onClick={() => navigate(isAdmin ? "/admin" : "/account")}
                 >
                   {isAdmin ? (
                     <DashboardCustomizeOutlined />

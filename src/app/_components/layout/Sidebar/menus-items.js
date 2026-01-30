@@ -1,36 +1,53 @@
-import { Category } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 
-export function getMenus() {
+export function getMenus(pathname) {
   const { t } = useTranslation();
+
+  const isAdminPath = pathname.startsWith("/admin");
+
+  if (isAdminPath) {
+    return [
+      {
+        label: "Management",
+        children: [
+          { path: "/admin", label: "Admin Dashboard" },
+          {
+            path: "/admin/categories",
+            label: "Categories",
+          },
+          {
+            path: "/admin/subcategories",
+            label: "Sub Categories",
+          },
+          {
+            path: "/admin/products",
+            label: "Products",
+          },
+          {
+            path: "/admin/orders",
+            label: "Customer Orders",
+          },
+          { path: "/", label: "Back to Shop" },
+        ],
+      },
+    ];
+  }
+
+  // Otherwise, we show the User's Personal Account menus
   return [
     {
-      label: "Menu",
+      label: "My Account",
       children: [
         {
-          path: "/admin",
-          label: "Dashboard",
+          path: "/account",
+          label: "Overview",
         },
         {
-          path: "/admin/categories",
-          label: "Category",
+          path: "/account/orders",
+          label: "My Orders",
         },
-        {
-          path: "/admin/subcategories",
-          label: "SubCategory",
-        },
-        {
-          path: "/admin/products",
-          label: "Product",
-        },
-        {
-          path: "/admin/orders",
-          label: "Orders",
-        },
-        {
-          path: "/",
-          label: "Visit Site",
-        },
+        { path: "/account/profile", label: "My Profile" },
+        { path: "/", label: "Continue Shopping" },
       ],
     },
   ];

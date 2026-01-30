@@ -21,7 +21,7 @@ function SidebarHeader() {
   }
   return (
     <SidebarHeaderDiv>
-      <Logo mini={miniAndClosed} mode={theme.type} />
+      <img src="/FASCO.svg" alt="" width={80} />
       {sidebarOptions?.view !== SIDEBAR_VIEWS.MINI && (
         <Zoom in={sidebarOptions?.open}>
           <IconButton
