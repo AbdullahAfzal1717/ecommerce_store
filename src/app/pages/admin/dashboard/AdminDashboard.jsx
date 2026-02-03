@@ -20,6 +20,7 @@ import { SalesOverview } from "@app/_components/widgets/SalesOverView";
 import { Orders } from "@app/_components/widgets/Orders"; // Your small green widget
 import { TotalRevenueThisYear } from "@app/_components/widgets/TotalRevenue";
 import { OrdersReport } from "@app/_components/widgets/OrderReport";
+import { toast } from "@app/_components/_core/MessageProvider";
 
 const StatCard = ({ title, value, icon, color }) => (
   <Paper elevation={0} sx={{ p: 3, border: "1px solid #eee", borderRadius: 4 }}>
@@ -60,6 +61,7 @@ const AdminDashboard = () => {
         const res = await orderService.getDashboardAnalytics();
         setDashboardData(res);
       } catch (err) {
+        toast.error("Analytics failed to load. Please check your connection.");
         console.error("Dashboard Load Failed", err);
       } finally {
         setLoading(false);

@@ -31,6 +31,7 @@ const UserDashboard = () => {
         console.log(res);
         setData(res);
       } catch (err) {
+        toast.error("We couldn't load your dashboard stats right now.");
         console.error("User Dashboard Fetch Error", err);
       } finally {
         setLoading(false);

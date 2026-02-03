@@ -4,6 +4,7 @@ import axios from "axios";
 import OrderTable from "@app/_components/admin/orders/OrderTable";
 import OrderDetailsDrawer from "@app/_components/admin/orders/OrderDetailsDrawer";
 import { orderService } from "@app/_services/order.service";
+import { toast } from "@app/_components/_core/MessageProvider";
 
 const AdminOrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -28,21 +29,17 @@ const AdminOrdersPage = () => {
   };
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
-      // 1. Call the backend API
-      // Usually a PATCH request to /orders/:id
       await orderService.updateStatus(orderId, newStatus);
 
-      // 2. Update local state so the UI changes instantly
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order._id === orderId ? { ...order, orderStatus: newStatus } : order
         )
       );
 
-      // Optional: Add a success notification here (e.g., using Snackbar)
+      toast.success(`Order status updated to ${newStatus}`); // Added Toast
     } catch (err) {
-      console.error("Status update failed", err);
-      alert("Failed to update status. Please try again.");
+      toast.error("Failed to update status. Please try again."); // Replaced alert
     }
   };
 

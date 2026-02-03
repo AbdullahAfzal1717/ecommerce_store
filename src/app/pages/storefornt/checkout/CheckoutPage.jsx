@@ -27,7 +27,7 @@ const CheckoutPage = () => {
 
   const [shippingInfo, setShippingInfo] = React.useState({
     firstName: authUser?.username?.split(" ")[0] || "", // Basic split for name
-    lastName: authUser?.username?.split(" ")[1] || "",
+    lastName: authUser?.username?.split(" ")[1] || "N/A",
     email: authUser?.email || "", // Crucial to include this
     address: "",
     city: "",

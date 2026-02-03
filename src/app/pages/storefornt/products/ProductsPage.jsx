@@ -42,6 +42,9 @@ const ProductsPage = () => {
           subcategories: subRes.data,
         });
       } catch (err) {
+        toast.error(
+          "Unable to load products. Please check your internet connection."
+        );
         console.error(err);
       } finally {
         setLoading(false);

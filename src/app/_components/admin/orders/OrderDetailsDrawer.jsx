@@ -10,7 +10,6 @@ import {
   Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { toast } from "@app/_components/_core/MessageProvider"; // Import toast
 
 const OrderDetailsDrawer = ({
   open,
@@ -21,6 +20,7 @@ const OrderDetailsDrawer = ({
 }) => {
   if (!order) return null;
 
+  // Logic to determine if the cancel button should show
   const canCancel =
     viewMode === "user" &&
     (order.orderStatus === "Pending" || order.orderStatus === "Processing");
@@ -52,6 +52,7 @@ const OrderDetailsDrawer = ({
 
       <Box sx={{ p: 3 }}>
         <Stack spacing={4}>
+          {/* Order Status Badge */}
           <Box
             sx={{
               p: 2,
@@ -75,6 +76,7 @@ const OrderDetailsDrawer = ({
             </Typography>
           </Box>
 
+          {/* Shipping Details */}
           <Box>
             <Typography
               variant="caption"
@@ -95,6 +97,7 @@ const OrderDetailsDrawer = ({
             </Typography>
           </Box>
 
+          {/* Items List */}
           <Box>
             <Typography variant="subtitle2" fontWeight="800" mb={2}>
               Items Ordered
@@ -116,7 +119,7 @@ const OrderDetailsDrawer = ({
                     </Typography>
                   </Box>
                   <Typography variant="body2" fontWeight="700">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    Rs. {(item.price * item.quantity).toFixed(2)}
                   </Typography>
                 </Stack>
               ))}
@@ -125,15 +128,17 @@ const OrderDetailsDrawer = ({
 
           <Divider />
 
+          {/* Pricing Summary */}
           <Stack direction="row" justifyContent="space-between">
             <Typography variant="h6" fontWeight="800">
               Total Paid
             </Typography>
             <Typography variant="h6" fontWeight="800" color="primary">
-              ${order.totalAmount?.toFixed(2)}
+              Rs. {order.totalAmount?.toFixed(2)}
             </Typography>
           </Stack>
 
+          {/* User Specific: Cancellation Action */}
           {canCancel && (
             <Box sx={{ mt: 2 }}>
               <Alert severity="info" sx={{ mb: 2, fontSize: "0.75rem" }}>
@@ -145,15 +150,8 @@ const OrderDetailsDrawer = ({
                 color="error"
                 size="large"
                 onClick={() => {
-                  if (
-                    window.confirm(
-                      "Cancel this order? Your refund will be processed to the original payment method."
-                    )
-                  ) {
-                    onCancelOrder(order._id, "Cancelled");
-                    onClose();
-                    toast.success("Cancellation request submitted."); // Feedback toast
-                  }
+                  // Simplified: Parent handles the dialog and the toast feedback now
+                  onCancelOrder(order._id);
                 }}
               >
                 Cancel Order
@@ -161,6 +159,7 @@ const OrderDetailsDrawer = ({
             </Box>
           )}
 
+          {/* Admin Specific: Transaction Info */}
           {viewMode === "admin" && (
             <Box
               sx={{

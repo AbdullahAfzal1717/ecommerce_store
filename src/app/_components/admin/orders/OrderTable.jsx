@@ -165,25 +165,6 @@ const OrderTable = ({
                       >
                         <VisibilityIcon />
                       </IconButton>
-                      {viewMode === "user" &&
-                        order.orderStatus === "Pending" && (
-                          <Button
-                            size="small"
-                            variant="contained"
-                            color="error"
-                            onClick={() => {
-                              onUpdateStatus(order._id, "Cancelled");
-                              toast.warning("Order cancelled"); // User feedback
-                            }}
-                            sx={{
-                              fontSize: "0.65rem",
-                              textTransform: "none",
-                              px: 1,
-                            }}
-                          >
-                            Cancel Order
-                          </Button>
-                        )}
                     </Stack>
                   </TableCell>
                 </TableRow>
