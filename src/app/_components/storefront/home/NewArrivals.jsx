@@ -16,6 +16,7 @@ const NewArrivals = () => {
         // Show only latest 8 for clean landing page
         setProducts(response.data.slice(0, 8));
       } catch (error) {
+        toast.error("Could not load new arrivals. Please refresh.");
         console.error("Failed to load products", error);
       } finally {
         setLoading(false);

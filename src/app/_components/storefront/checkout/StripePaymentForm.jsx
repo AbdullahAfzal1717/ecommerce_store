@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Button, Box, Typography, CircularProgress } from "@mui/material";
-import axios from "axios";
 import { useCart } from "@app/_components/_core/CartProvider/hooks";
-import { useNavigate } from "react-router-dom"; // or your preferred routing
+import { useNavigate } from "react-router-dom";
 import { orderService } from "@app/_services/order.service";
 import { useAuth } from "@app/_components/_core/AuthProvider/hooks";
 import { paymentService } from "@app/_services/payment.service";
+import { toast } from "@app/_components/_core/MessageProvider"; // Added import
 
 const StripePaymentForm = ({ total, shippingInfo, isFormValid, onSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const navigate = useNavigate();
   const { cartItems, clearCart } = useCart();
   const { isAuthenticated, authUser } = useAuth();
 
@@ -20,18 +19,17 @@ const StripePaymentForm = ({ total, shippingInfo, isFormValid, onSuccess }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!stripe || !elements || !isAuthenticated) return; // Block if not logged in
+    if (!stripe || !elements || !isAuthenticated) return;
 
     setLoading(true);
     setError(null);
+    toast.info("Processing your payment..."); // Initial feedback
 
     try {
-      // 1. Create Payment Intent via Service
       const {
         data: { clientSecret },
       } = await paymentService.createIntent(total);
 
-      // 2. Confirm Payment with Stripe
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
@@ -45,10 +43,10 @@ const StripePaymentForm = ({ total, shippingInfo, isFormValid, onSuccess }) => {
 
       if (result.error) {
         setError(result.error.message);
+        toast.error(result.error.message); // Error notification
       } else if (result.paymentIntent.status === "succeeded") {
-        // 3. Save Order via Service
         await orderService.placeOrder({
-          user: authUser.id, // Linking the order to the user
+          user: authUser.id,
           items: cartItems.map((item) => ({
             productId: item._id,
             title: item.title,
@@ -61,11 +59,14 @@ const StripePaymentForm = ({ total, shippingInfo, isFormValid, onSuccess }) => {
           paymentStatus: "Paid",
         });
 
+        toast.success("Payment successful! Your order has been placed."); // Success notification
         clearCart();
         onSuccess();
       }
     } catch (err) {
-      setError("Something went wrong with the transaction.");
+      const msg = "Something went wrong with the transaction.";
+      setError(msg);
+      toast.error(msg);
       console.error(err);
     } finally {
       setLoading(false);
@@ -78,7 +79,6 @@ const StripePaymentForm = ({ total, shippingInfo, isFormValid, onSuccess }) => {
         Credit or Debit Card
       </Typography>
 
-      {/* Styled Stripe Input */}
       <Box
         sx={{
           p: 2,

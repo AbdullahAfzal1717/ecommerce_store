@@ -1,17 +1,30 @@
 import React from "react";
-import { Avatar, Box, Button, IconButton, InputAdornment, Stack, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  InputAdornment,
+  Stack,
+  Typography,
+} from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Visibility, VisibilityOff, PhotoCamera } from "@mui/icons-material";
-import { JumboForm, JumboInput, JumboOutlinedInput } from "@jumbo/vendors/react-hook-form";
+import {
+  JumboForm,
+  JumboInput,
+  JumboOutlinedInput,
+} from "@jumbo/vendors/react-hook-form";
 import { useAuth } from "@app/_components/_core/AuthProvider/hooks";
 import { useNavigate } from "react-router-dom";
 import { validationSchema } from "../validation";
+import { toast } from "@app/_components/_core/MessageProvider"; // Added import
 
 const SignupForm = () => {
   const [values, setValues] = React.useState({ showPassword: false });
   const [avatarFile, setAvatarFile] = React.useState(null);
   const [previewUrl, setPreviewUrl] = React.useState("");
-  
+
   const { loading, signup } = useAuth();
   const navigate = useNavigate();
 
@@ -19,45 +32,53 @@ const SignupForm = () => {
     const file = e.target.files[0];
     if (file) {
       setAvatarFile(file);
-      setPreviewUrl(URL.createObjectURL(file)); // Create local preview
+      setPreviewUrl(URL.createObjectURL(file));
+      toast.info("Avatar image selected"); // Informational toast
     }
   };
 
   async function handleSignup(data) {
     try {
-      // Merge form data with the file state
-      const result=await signup({ ...data, avatar: avatarFile });
-      if(result){
-        navigate("/");
-      }
+      await signup({ ...data, avatar: avatarFile });
+      // Redirect happens on success
+      navigate("/");
     } catch (error) {
-      console.error("Signup error:", error);
+      toast.error(error.message || "Registration failed. Please try again."); // Error feedback
     }
   }
 
   return (
     <JumboForm validationSchema={validationSchema} onSubmit={handleSignup}>
       <Stack spacing={3} mb={3}>
-        {/* Avatar Upload Section */}
         <Box display="flex" flexDirection="column" alignItems="center" gap={1}>
-          <Avatar 
-            src={previewUrl} 
-            sx={{ width: 80, height: 80, border: '2px solid #eee' }}
+          <Avatar
+            src={previewUrl}
+            sx={{ width: 80, height: 80, border: "2px solid #eee" }}
           />
-          <Button 
-            variant="text" 
-            component="label" 
-            startIcon={<PhotoCamera />} 
+          <Button
+            variant="text"
+            component="label"
+            startIcon={<PhotoCamera />}
             size="small"
           >
             Upload Photo
-            <input type="file" hidden accept="image/*" onChange={handleFileChange} />
+            <input
+              type="file"
+              hidden
+              accept="image/*"
+              onChange={handleFileChange}
+            />
           </Button>
         </Box>
 
         <JumboInput fieldName={"name"} label={"Full Name"} defaultValue="" />
-        
-        <JumboInput fullWidth fieldName={"email"} label={"Email"} defaultValue="" />
+
+        <JumboInput
+          fullWidth
+          fieldName={"email"}
+          label={"Email"}
+          defaultValue=""
+        />
 
         <JumboOutlinedInput
           fieldName={"password"}
@@ -65,7 +86,11 @@ const SignupForm = () => {
           type={values.showPassword ? "text" : "password"}
           endAdornment={
             <InputAdornment position="end">
-              <IconButton onClick={() => setValues({ ...values, showPassword: !values.showPassword })}>
+              <IconButton
+                onClick={() =>
+                  setValues({ ...values, showPassword: !values.showPassword })
+                }
+              >
                 {values.showPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             </InputAdornment>
@@ -73,7 +98,13 @@ const SignupForm = () => {
           defaultValue=""
         />
 
-        <LoadingButton fullWidth type="submit" variant="contained" size="large" loading={loading}>
+        <LoadingButton
+          fullWidth
+          type="submit"
+          variant="contained"
+          size="large"
+          loading={loading}
+        >
           Create Account
         </LoadingButton>
       </Stack>

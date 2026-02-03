@@ -20,16 +20,14 @@ import {
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-
-// Import your utilities
 import { usePagination } from "@app/_hooks/usePagination";
 import { downloadCSV } from "@app/_utilities/helpers/exportCSV";
+import { toast } from "@app/_components/_core/MessageProvider"; // Added import
 
 const ProductTable = ({ products = [], onEdit, onDelete, onViewDetail }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedRow, setSelectedRow] = React.useState(null);
 
-  // 1. INTEGRATE PAGINATION HOOK (Default to 10 products per page)
   const {
     page,
     rowsPerPage,
@@ -39,8 +37,8 @@ const ProductTable = ({ products = [], onEdit, onDelete, onViewDetail }) => {
     totalCount,
   } = usePagination(products, 10);
 
-  // 2. INTEGRATE CSV EXPORT
   const handleExport = () => {
+    toast.info("Preparing inventory export..."); // Added Toast
     const headers = [
       "ID",
       "Title",
@@ -51,13 +49,14 @@ const ProductTable = ({ products = [], onEdit, onDelete, onViewDetail }) => {
     ];
     const data = products.map((prod) => [
       prod._id,
-      prod.title.replace(/,/g, ""), // Remove commas to prevent CSV breakage
+      prod.title.replace(/,/g, ""),
       prod.subCategory?.category?.title || "N/A",
       prod.subCategory?.title || "N/A",
       prod.price,
       prod.quantity,
     ]);
     downloadCSV(data, headers, "products_inventory");
+    toast.success("Inventory report downloaded!"); // Added Toast
   };
 
   const handleMenuOpen = (event, row) => {
@@ -72,7 +71,6 @@ const ProductTable = ({ products = [], onEdit, onDelete, onViewDetail }) => {
 
   return (
     <Box>
-      {/* Header with Export Action */}
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -110,7 +108,6 @@ const ProductTable = ({ products = [], onEdit, onDelete, onViewDetail }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* 3. MAP OVER paginatedItems */}
             {paginatedItems.map((prod) => (
               <TableRow key={prod._id} hover>
                 <TableCell
@@ -196,7 +193,6 @@ const ProductTable = ({ products = [], onEdit, onDelete, onViewDetail }) => {
           </TableBody>
         </Table>
 
-        {/* 4. PAGINATION CONTROLS */}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -208,7 +204,6 @@ const ProductTable = ({ products = [], onEdit, onDelete, onViewDetail }) => {
         />
       </TableContainer>
 
-      {/* Action Menu */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

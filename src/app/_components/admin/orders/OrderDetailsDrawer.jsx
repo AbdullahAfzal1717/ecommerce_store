@@ -10,8 +10,8 @@ import {
   Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { toast } from "@app/_components/_core/MessageProvider"; // Import toast
 
-// We use viewMode="admin" or viewMode="user" to decide what to show
 const OrderDetailsDrawer = ({
   open,
   order,
@@ -21,8 +21,6 @@ const OrderDetailsDrawer = ({
 }) => {
   if (!order) return null;
 
-  // Logic: Only a person in "user" view can cancel,
-  // and only if the status is not yet Shipped/Delivered.
   const canCancel =
     viewMode === "user" &&
     (order.orderStatus === "Pending" || order.orderStatus === "Processing");
@@ -34,7 +32,6 @@ const OrderDetailsDrawer = ({
       onClose={onClose}
       PaperProps={{ sx: { width: { xs: "100%", sm: 450 } } }}
     >
-      {/* HEADER */}
       <Box
         sx={{
           p: 3,
@@ -55,7 +52,6 @@ const OrderDetailsDrawer = ({
 
       <Box sx={{ p: 3 }}>
         <Stack spacing={4}>
-          {/* STATUS SECTION */}
           <Box
             sx={{
               p: 2,
@@ -79,7 +75,6 @@ const OrderDetailsDrawer = ({
             </Typography>
           </Box>
 
-          {/* SHIPPING INFO - Always relevant */}
           <Box>
             <Typography
               variant="caption"
@@ -100,7 +95,6 @@ const OrderDetailsDrawer = ({
             </Typography>
           </Box>
 
-          {/* ORDERED ITEMS */}
           <Box>
             <Typography variant="subtitle2" fontWeight="800" mb={2}>
               Items Ordered
@@ -131,7 +125,6 @@ const OrderDetailsDrawer = ({
 
           <Divider />
 
-          {/* TOTALS */}
           <Stack direction="row" justifyContent="space-between">
             <Typography variant="h6" fontWeight="800">
               Total Paid
@@ -141,7 +134,6 @@ const OrderDetailsDrawer = ({
             </Typography>
           </Stack>
 
-          {/* USER VIEW ACTION: CANCELLATION */}
           {canCancel && (
             <Box sx={{ mt: 2 }}>
               <Alert severity="info" sx={{ mb: 2, fontSize: "0.75rem" }}>
@@ -160,6 +152,7 @@ const OrderDetailsDrawer = ({
                   ) {
                     onCancelOrder(order._id, "Cancelled");
                     onClose();
+                    toast.success("Cancellation request submitted."); // Feedback toast
                   }
                 }}
               >
@@ -168,7 +161,6 @@ const OrderDetailsDrawer = ({
             </Box>
           )}
 
-          {/* ADMIN VIEW INFO: TECHNICAL DETAILS */}
           {viewMode === "admin" && (
             <Box
               sx={{

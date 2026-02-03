@@ -20,10 +20,9 @@ import {
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-
-// Import your new utilities
 import { usePagination } from "@app/_hooks/usePagination";
 import { downloadCSV } from "@app/_utilities/helpers/exportCSV";
+import { toast } from "@app/_components/_core/MessageProvider"; // Import toast
 
 const OrderTable = ({
   orders = [],
@@ -31,21 +30,18 @@ const OrderTable = ({
   onUpdateStatus,
   viewMode = "user",
 }) => {
-  // 1. USE THE CUSTOM PAGINATION HOOK
   const {
     page,
     rowsPerPage,
-    paginatedItems, // This replaces 'paginatedOrders'
+    paginatedItems,
     handleChangePage,
     handleChangeRowsPerPage,
     totalCount,
   } = usePagination(orders, 5);
 
-  // 2. USE THE EXPORT UTILITY
   const handleExport = () => {
+    toast.info("Generating order report...");
     const headers = ["Order ID", "Date", "Customer", "Amount", "Status"];
-
-    // Map the orders into simple arrays for the CSV utility
     const data = orders.map((order) => [
       `#${order._id.slice(-6).toUpperCase()}`,
       new Date(order.createdAt).toLocaleDateString(),
@@ -53,8 +49,13 @@ const OrderTable = ({
       order.totalAmount?.toFixed(2),
       order.orderStatus,
     ]);
-
     downloadCSV(data, headers, "orders_report");
+    toast.success("CSV Downloaded");
+  };
+
+  const handleStatusChange = (orderId, newStatus) => {
+    onUpdateStatus(orderId, newStatus);
+    toast.success(`Order status updated to ${newStatus}`); // Admin confirmation
   };
 
   const getStatusStyle = (status) => {
@@ -86,7 +87,7 @@ const OrderTable = ({
         <Button
           variant="outlined"
           startIcon={<FileDownloadIcon />}
-          onClick={handleExport} // Using the new function
+          onClick={handleExport}
           sx={{ borderRadius: 2, textTransform: "none" }}
         >
           Export CSV
@@ -110,7 +111,6 @@ const OrderTable = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* Map over paginatedItems from our hook */}
             {paginatedItems.map((order) => {
               const statusStyle = getStatusStyle(order.orderStatus);
               return (
@@ -129,8 +129,8 @@ const OrderTable = ({
                       <FormControl size="small" sx={{ minWidth: 120 }}>
                         <Select
                           value={order.orderStatus}
-                          onChange={(e) =>
-                            onUpdateStatus(order._id, e.target.value)
+                          onChange={
+                            (e) => handleStatusChange(order._id, e.target.value) // Use wrapped handler
                           }
                           sx={{ fontSize: "0.85rem", fontWeight: "bold" }}
                         >
@@ -171,9 +171,10 @@ const OrderTable = ({
                             size="small"
                             variant="contained"
                             color="error"
-                            onClick={() =>
-                              onUpdateStatus(order._id, "Cancelled")
-                            }
+                            onClick={() => {
+                              onUpdateStatus(order._id, "Cancelled");
+                              toast.warning("Order cancelled"); // User feedback
+                            }}
                             sx={{
                               fontSize: "0.65rem",
                               textTransform: "none",
@@ -194,11 +195,11 @@ const OrderTable = ({
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={totalCount} // From hook
-          rowsPerPage={rowsPerPage} // From hook
-          page={page} // From hook
-          onPageChange={handleChangePage} // From hook
-          onRowsPerPageChange={handleChangeRowsPerPage} // From hook
+          count={totalCount}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </TableContainer>
     </Box>

@@ -2,12 +2,12 @@ import React from "react";
 import { AuthContext } from "./AuthContext";
 import { eraseCookie, getCookie, setCookie } from "@jumbo/utilities/cookies";
 import axios from "axios";
-
-const API_URL = "http://localhost:5050/api/v1/auth";
+import { toast } from "@app/_components/_core/MessageProvider"; // Ensure this path is correct
+import api from "@app/_services/api";
 
 const loginService = async (login, password) => {
   try {
-    const response = await axios.post(`${API_URL}/login`, { login, password });
+    const response = await api.post("/auth/login", { login, password });
     return response.data;
   } catch (error) {
     const message =
@@ -19,17 +19,15 @@ const loginService = async (login, password) => {
 const signupService = async (userData) => {
   try {
     const formData = new FormData();
-    // We use 'name' from frontend but backend expects 'username' based on your model
     formData.append("username", userData.name);
     formData.append("email", userData.email);
     formData.append("password", userData.password);
 
-    // Only append avatar if a file was actually selected
     if (userData.avatar) {
       formData.append("avatar", userData.avatar);
     }
 
-    const response = await axios.post(`${API_URL}/register`, formData, {
+    const response = await api.post("/auth/register", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
@@ -48,26 +46,28 @@ export function AuthProvider({ children }) {
     if (response.token) {
       const authData = {
         token: response.token,
-        user: response.user, // Ensure backend sends 'user' object
+        user: response.user,
       };
 
-      // 1. Save to Cookie for persistence
       const authUserSr = encodeURIComponent(JSON.stringify(authData));
       setCookie("auth-user", authUserSr, 1);
 
-      // 2. Save to State for immediate UI update
       setAuthUser(authData.user);
       setIsAuthenticated(true);
+
+      // SUCCESS MESSAGE
+      toast.success(`Welcome back, ${authData.user.username}!`);
     }
   };
+
   const login = async ({ email, password }) => {
     setLoading(true);
     try {
-      // Simulate a call to an authentication service
       const response = await loginService(email, password);
       handleAuthSuccess(response.data);
     } catch (error) {
-      console.error("Login failed", error);
+      // ERROR MESSAGE
+      toast.error(error.message);
       throw error;
     } finally {
       setLoading(false);
@@ -79,8 +79,10 @@ export function AuthProvider({ children }) {
     try {
       const response = await signupService(data);
       handleAuthSuccess(response.data);
+      toast.success("Account created successfully!");
     } catch (error) {
-      alert(error.message);
+      // ERROR MESSAGE
+      toast.error(error.message);
     } finally {
       setLoading(false);
     }
@@ -102,8 +104,8 @@ export function AuthProvider({ children }) {
     eraseCookie("auth-user");
     setAuthUser(null);
     setIsAuthenticated(false);
+    toast.info("You have been logged out.");
   };
-
   React.useEffect(() => {
     let authUserSr = getCookie("auth-user");
     if (authUserSr) {

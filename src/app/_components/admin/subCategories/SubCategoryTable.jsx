@@ -20,16 +20,14 @@ import {
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-
-// Import your utilities
 import { usePagination } from "@app/_hooks/usePagination";
 import { downloadCSV } from "@app/_utilities/helpers/exportCSV";
+import { toast } from "@app/_components/_core/MessageProvider"; // Import toast
 
 const SubCategoryTable = ({ subcategories = [], onEdit, onDelete }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedRow, setSelectedRow] = React.useState(null);
 
-  // 1. INTEGRATE PAGINATION HOOK
   const {
     page,
     rowsPerPage,
@@ -39,8 +37,8 @@ const SubCategoryTable = ({ subcategories = [], onEdit, onDelete }) => {
     totalCount,
   } = usePagination(subcategories, 5);
 
-  // 2. INTEGRATE CSV EXPORT
   const handleExport = () => {
+    toast.info("Generating subcategory report..."); // Feedback
     const headers = [
       "ID",
       "Sub-Category Title",
@@ -51,9 +49,10 @@ const SubCategoryTable = ({ subcategories = [], onEdit, onDelete }) => {
       sub._id,
       sub.title,
       sub.category?.title || "N/A",
-      sub.description?.replace(/,/g, " ") || "No Description", // Prevent CSV column breaks
+      sub.description?.replace(/,/g, " ") || "No Description",
     ]);
     downloadCSV(data, headers, "subcategories_list");
+    toast.success("Download started");
   };
 
   const handleMenuOpen = (event, row) => {
@@ -68,7 +67,6 @@ const SubCategoryTable = ({ subcategories = [], onEdit, onDelete }) => {
 
   return (
     <Box>
-      {/* Header with Export Action */}
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -105,7 +103,6 @@ const SubCategoryTable = ({ subcategories = [], onEdit, onDelete }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* 3. MAP OVER paginatedItems */}
             {paginatedItems.map((sub) => (
               <TableRow key={sub._id} hover>
                 <TableCell>
@@ -141,7 +138,6 @@ const SubCategoryTable = ({ subcategories = [], onEdit, onDelete }) => {
           </TableBody>
         </Table>
 
-        {/* 4. PAGINATION CONTROLS */}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -153,7 +149,6 @@ const SubCategoryTable = ({ subcategories = [], onEdit, onDelete }) => {
         />
       </TableContainer>
 
-      {/* Action Menu */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

@@ -14,28 +14,31 @@ import { AppSnackbar } from "./_components/_core";
 import { Spinner } from "./_shared";
 import { AppProvider } from "./_components/AppProvider";
 import { CartProvider } from "./_components/_core/CartProvider";
+import { MessageProvider } from "./_components/_core/MessageProvider";
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-      <AppProvider>
-        <JumboTheme init={CONFIG.THEME}>
-          <CssBaseline />
-          <Suspense fallback={<Spinner />}>
-            <JumboRTL>
-              <JumboDialogProvider>
-                <JumboDialog />
-                <AppSnackbar>
-                  <RouterProvider router={router} />
-                </AppSnackbar>
-              </JumboDialogProvider>
-            </JumboRTL>
-          </Suspense>
-        </JumboTheme>
-      </AppProvider>
-      </CartProvider>
-    </AuthProvider>
+    <MessageProvider>
+      <AuthProvider>
+        <CartProvider>
+          <AppProvider>
+            <JumboTheme init={CONFIG.THEME}>
+              <CssBaseline />
+              <Suspense fallback={<Spinner />}>
+                <JumboRTL>
+                  <JumboDialogProvider>
+                    <JumboDialog />
+                    <AppSnackbar>
+                      <RouterProvider router={router} />
+                    </AppSnackbar>
+                  </JumboDialogProvider>
+                </JumboRTL>
+              </Suspense>
+            </JumboTheme>
+          </AppProvider>
+        </CartProvider>
+      </AuthProvider>
+    </MessageProvider>
   );
 }
 

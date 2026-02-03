@@ -30,7 +30,9 @@ const AuthUserPopover = () => {
   const isAdmin = authUser?.role === "admin" || authUser?.role === "Admin";
 
   async function handleLogout() {
-    await logout();
+    if (authUser) {
+      await logout();
+    }
     return navigate("/auth/login-1");
   }
 
@@ -108,7 +110,10 @@ const AuthUserPopover = () => {
               <ListItemIcon sx={{ minWidth: 36 }}>
                 <LogoutIcon />
               </ListItemIcon>
-              <ListItemText primary="Logout" sx={{ my: 0 }} />
+              <ListItemText
+                primary={`${authUser ? "Logout" : "Login"}`}
+                sx={{ my: 0 }}
+              />
             </ListItemButton>
           </List>
           <EditProfileDialog

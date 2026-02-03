@@ -2,19 +2,17 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import { getCookie, setCookie, eraseCookie } from "@jumbo/utilities/cookies";
 import { CartContext } from "./CartContext";
 import { useAuth } from "../AuthProvider/hooks";
+import { toast } from "@app/_components/_core/MessageProvider";
 
 export const CartProvider = ({ children }) => {
   const { authUser, isAuthenticated } = useAuth();
 
-
-  // Create a unique key based on User ID or 'guest'
   const cartKey =
     isAuthenticated && authUser?.id ? `cart_user_${authUser.id}` : "cart_guest";
 
   const [cartItems, setCartItems] = useState([]);
   const isInitialMount = useRef(true);
 
-  // 1. EFFECT: Handle Loading and Merging when Auth State changes
   useEffect(() => {
     const userCartData = authUser?.id
       ? getCookie(`cart_user_${authUser.id}`)
@@ -24,7 +22,6 @@ export const CartProvider = ({ children }) => {
     let itemsToSet = [];
 
     if (isAuthenticated && authUser?.id) {
-      // SCENARIO: User just logged in
       const userItems = userCartData
         ? JSON.parse(decodeURIComponent(userCartData))
         : [];
@@ -33,8 +30,6 @@ export const CartProvider = ({ children }) => {
         : [];
 
       if (guestItems.length > 0) {
-        // MERGE LOGIC: Combine guest items with existing user items
-        // We use a Map to prevent duplicate IDs
         const mergedMap = new Map();
         [...userItems, ...guestItems].forEach((item) => {
           if (mergedMap.has(item._id)) {
@@ -48,14 +43,12 @@ export const CartProvider = ({ children }) => {
           }
         });
         itemsToSet = Array.from(mergedMap.values());
-
-        // Cleanup: Once merged, guest cart must die
         eraseCookie("cart_guest");
+        toast.info("Guest cart merged with your account!");
       } else {
         itemsToSet = userItems;
       }
     } else {
-      // SCENARIO: Guest User
       itemsToSet = guestCartData
         ? JSON.parse(decodeURIComponent(guestCartData))
         : [];
@@ -64,18 +57,14 @@ export const CartProvider = ({ children }) => {
     setCartItems(itemsToSet);
   }, [isAuthenticated, authUser?._id]);
 
-  // 2. EFFECT: Save to Cookie whenever cartItems change
   useEffect(() => {
-    // Avoid saving empty arrays on the very first render before useEffect 1 finishes
     if (isInitialMount.current) {
       isInitialMount.current = false;
       return;
     }
-
     setCookie(cartKey, encodeURIComponent(JSON.stringify(cartItems)), 7);
   }, [cartItems, cartKey]);
 
-  // --- CART FUNCTIONS (Your original logic, kept intact) ---
   const addToCart = (product, qty = 1) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item._id === product._id);
@@ -84,10 +73,12 @@ export const CartProvider = ({ children }) => {
           existing.quantityInCart + qty,
           product.quantity
         );
+        toast.info(`Updated quantity for ${product.title}`);
         return prev.map((item) =>
           item._id === product._id ? { ...item, quantityInCart: newQty } : item
         );
       }
+      toast.success(`${product.title} added to cart`);
       return [...prev, { ...product, quantityInCart: qty }];
     });
   };
@@ -98,7 +89,10 @@ export const CartProvider = ({ children }) => {
         if (item._id === id) {
           let newQty = item.quantityInCart + amount;
           if (newQty < 1) newQty = 1;
-          if (newQty > stockLimit) newQty = stockLimit;
+          if (newQty > stockLimit) {
+            newQty = stockLimit;
+            toast.warning("Maximum stock reached");
+          }
           return { ...item, quantityInCart: newQty };
         }
         return item;
@@ -106,8 +100,13 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-  const removeItem = (id) =>
-    setCartItems((prev) => prev.filter((item) => item._id !== id));
+  const removeItem = (id) => {
+    setCartItems((prev) => {
+      const filtered = prev.filter((item) => item._id !== id);
+      toast.error("Item removed from cart");
+      return filtered;
+    });
+  };
 
   const total = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantityInCart,
@@ -118,6 +117,7 @@ export const CartProvider = ({ children }) => {
   const clearCart = () => {
     setCartItems([]);
     eraseCookie(cartKey);
+    toast.warning("Cart cleared");
   };
 
   return (

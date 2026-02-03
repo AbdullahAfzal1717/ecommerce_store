@@ -21,6 +21,7 @@ import {
 } from "@mui/icons-material";
 import { useCart } from "@app/_components/_core/CartProvider/hooks";
 import { useNavigate } from "react-router-dom";
+import { toast } from "@app/_components/_core/MessageProvider";
 
 const ProductDetailDrawer = ({ product, open, onClose }) => {
   const theme = useTheme();
@@ -51,9 +52,9 @@ const ProductDetailDrawer = ({ product, open, onClose }) => {
 
   const handleAddToCart = () => {
     addToCart(product, buyQty);
+    toast.success(`${buyQty}x ${product.title} added to cart!`); // Detailed feedback
     onClose();
   };
-
   const handleBuyNow = () => {
     addToCart(product, buyQty);
     navigate("/checkout");

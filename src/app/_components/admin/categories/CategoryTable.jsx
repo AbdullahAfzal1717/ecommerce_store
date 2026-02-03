@@ -19,16 +19,14 @@ import {
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
-
-// Import your utilities
 import { usePagination } from "@app/_hooks/usePagination";
 import { downloadCSV } from "@app/_utilities/helpers/exportCSV";
+import { toast } from "@app/_components/_core/MessageProvider"; // Import toast
 
 const CategoryTable = ({ categories = [], onEdit, onDelete }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedRow, setSelectedRow] = React.useState(null);
 
-  // 1. INTEGRATE PAGINATION HOOK
   const {
     page,
     rowsPerPage,
@@ -38,8 +36,8 @@ const CategoryTable = ({ categories = [], onEdit, onDelete }) => {
     totalCount,
   } = usePagination(categories, 5);
 
-  // 2. INTEGRATE CSV EXPORT
   const handleExport = () => {
+    toast.info("Preparing category export..."); // User feedback
     const headers = ["ID", "Title", "Description", "Image URL"];
     const data = categories.map((cat) => [
       cat._id,
@@ -48,6 +46,7 @@ const CategoryTable = ({ categories = [], onEdit, onDelete }) => {
       cat.image || "No Image",
     ]);
     downloadCSV(data, headers, "categories_list");
+    toast.success("Download started");
   };
 
   const handleMenuOpen = (event, category) => {
@@ -62,7 +61,6 @@ const CategoryTable = ({ categories = [], onEdit, onDelete }) => {
 
   return (
     <Box>
-      {/* Header with Export Action */}
       <Stack
         direction="row"
         justifyContent="space-between"
@@ -98,7 +96,6 @@ const CategoryTable = ({ categories = [], onEdit, onDelete }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* 3. MAP OVER paginatedItems */}
             {paginatedItems.map((cat) => (
               <TableRow key={cat._id} hover>
                 <TableCell>
@@ -120,7 +117,6 @@ const CategoryTable = ({ categories = [], onEdit, onDelete }) => {
           </TableBody>
         </Table>
 
-        {/* 4. PAGINATION CONTROLS */}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -132,7 +128,6 @@ const CategoryTable = ({ categories = [], onEdit, onDelete }) => {
         />
       </TableContainer>
 
-      {/* Action Menu stays the same */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
