@@ -57,29 +57,33 @@ const ProfilePage = () => {
             </Div>
             {/* Add more profile fields here if needed */}
             <Divider sx={{ my: 1 }} />
-            <Div
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Typography fontWeight="bold">Referral Code:</Typography>
-              <Stack direction="row" spacing={1} alignItems="center">
-                <Typography color="primary.main" fontWeight="bold">
-                  {authUser?.referralCode}
-                </Typography>
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    navigator.clipboard.writeText(authUser?.referralCode);
-                    toast.success("Code copied!");
-                  }}
-                >
-                  <ContentCopy fontSize="inherit" />
-                </IconButton>
-              </Stack>
-            </Div>
+            {authUser?.referralCode ? (
+              <Div
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Typography fontWeight="bold">Referral Code:</Typography>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Typography color="primary.main" fontWeight="bold">
+                    {authUser?.referralCode}
+                  </Typography>
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      navigator.clipboard.writeText(authUser?.referralCode);
+                      toast.success("Code copied!");
+                    }}
+                  >
+                    <ContentCopy fontSize="inherit" />
+                  </IconButton>
+                </Stack>
+              </Div>
+            ) : (
+              ""
+            )}
           </Stack>
         </CardContent>
       </Card>

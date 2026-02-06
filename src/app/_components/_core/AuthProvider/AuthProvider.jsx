@@ -17,6 +17,7 @@ const loginService = async (login, password) => {
 };
 
 const signupService = async (userData) => {
+  console.log(userData);
   try {
     const formData = new FormData();
     formData.append("username", userData.name);

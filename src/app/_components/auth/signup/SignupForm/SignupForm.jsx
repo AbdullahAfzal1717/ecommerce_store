@@ -16,17 +16,19 @@ import {
   JumboOutlinedInput,
 } from "@jumbo/vendors/react-hook-form";
 import { useAuth } from "@app/_components/_core/AuthProvider/hooks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { validationSchema } from "../validation";
 import { toast } from "@app/_components/_core/MessageProvider"; // Added import
 
 const SignupForm = () => {
+  const [searchParams] = useSearchParams();
   const [values, setValues] = React.useState({ showPassword: false });
   const [avatarFile, setAvatarFile] = React.useState(null);
   const [previewUrl, setPreviewUrl] = React.useState("");
-
   const { loading, signup } = useAuth();
   const navigate = useNavigate();
+
+  const urlReferralCode = searchParams.get("ref") || "";
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -38,6 +40,7 @@ const SignupForm = () => {
   };
 
   async function handleSignup(data) {
+    console.log(data);
     try {
       await signup({ ...data, avatar: avatarFile });
       // Redirect happens on success
@@ -79,7 +82,17 @@ const SignupForm = () => {
           label={"Email"}
           defaultValue=""
         />
-
+        <JumboInput
+          fullWidth
+          fieldName={"referralCode"}
+          label={"Referral Code (Optional)"}
+          defaultValue={urlReferralCode} // Auto-fills from URL
+          helperText={
+            urlReferralCode
+              ? "Referral code applied!"
+              : "Have a code? Enter it here"
+          }
+        />
         <JumboOutlinedInput
           fieldName={"password"}
           label={"Password"}

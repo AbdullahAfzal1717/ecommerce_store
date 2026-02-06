@@ -24,7 +24,7 @@ const UserDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const referralLink = `${window.location.origin}/signup?ref=${authUser?.referralCode}`;
+  const referralLink = `${window.location.origin}/auth/signup-1?ref=${authUser?.referralCode}`;
 
   const copyToClipboard = (text, message) => {
     navigator.clipboard.writeText(text);
@@ -150,31 +150,87 @@ const UserDashboard = () => {
             {/* Navigation Shortcuts */}
             <Paper
               elevation={0}
-              sx={{ p: 3, border: "1px solid #eee", borderRadius: 4 }}
+              sx={{
+                p: 3,
+                border: "1px solid #eee",
+                borderRadius: 4,
+                bgcolor: "#f9f9f9",
+              }}
             >
               <Typography variant="subtitle2" color="text.secondary" mb={2}>
-                ACCOUNT SHORTCUTS
+                REFER YOUR FRIENDS
               </Typography>
-              <Stack spacing={1}>
+
+              <Box
+                sx={{
+                  mb: 2,
+                  p: 2,
+                  bgcolor: "white",
+                  borderRadius: 2,
+                  border: "1px dashed #ccc",
+                  textAlign: "center",
+                }}
+              >
+                <Typography variant="caption" color="text.secondary">
+                  YOUR CODE
+                </Typography>
+                <Typography variant="h5" fontWeight="900" color="primary">
+                  {authUser?.referralCode}
+                </Typography>
+              </Box>
+
+              <Stack spacing={2}>
                 <Button
                   fullWidth
-                  align="left"
-                  variant="text"
-                  onClick={() => navigate("/account/profile")}
-                  sx={{ justifyContent: "flex-start", color: "black" }}
+                  variant="contained"
+                  size="small"
+                  startIcon={<ContentCopyIcon />}
+                  onClick={() =>
+                    copyToClipboard(referralLink, "Referral link copied!")
+                  }
                 >
-                  Profile Settings
+                  Copy Invite Link
                 </Button>
                 <Button
                   fullWidth
-                  align="left"
-                  variant="text"
-                  onClick={() => navigate("/account/orders")}
-                  sx={{ justifyContent: "flex-start", color: "black" }}
+                  variant="outlined"
+                  size="small"
+                  onClick={() =>
+                    copyToClipboard(authUser?.referralCode, "Code copied!")
+                  }
                 >
-                  Full Order History
+                  Copy Only Code
                 </Button>
               </Stack>
+
+              <Box sx={{ mt: 2, pt: 2, borderTop: "1px solid #eee" }}>
+                <Typography
+                  variant="caption"
+                  display="block"
+                  textAlign="center"
+                >
+                  Account Status:
+                  <Box
+                    component="span"
+                    sx={{
+                      ml: 1,
+                      px: 1,
+                      py: 0.5,
+                      borderRadius: 1,
+                      fontWeight: "bold",
+                      color: "white",
+                      bgcolor:
+                        authUser?.accountStatus === "green"
+                          ? "success.main"
+                          : authUser?.accountStatus === "yellow"
+                            ? "warning.main"
+                            : "error.main",
+                    }}
+                  >
+                    {authUser?.accountStatus?.toUpperCase()}
+                  </Box>
+                </Typography>
+              </Box>
             </Paper>
           </Stack>
         </Grid>
