@@ -8,11 +8,13 @@ import {
   Button,
   Divider,
   Box,
+  IconButton,
 } from "@mui/material";
+import { Edit, ContentCopy } from "@mui/icons-material";
 import { Div } from "@jumbo/shared";
-import EditIcon from "@mui/icons-material/Edit";
 import { useAuth } from "@app/_components/_core/AuthProvider/hooks";
 import EditProfileDialog from "@app/_components/admin/profile/EditProfileDialog";
+import { toast } from "@app/_components/_core/MessageProvider";
 
 const ProfilePage = () => {
   const { authUser } = useAuth();
@@ -41,7 +43,7 @@ const ProfilePage = () => {
             </Box>
             <Button
               variant="outlined"
-              startIcon={<EditIcon />}
+              startIcon={<Edit />}
               onClick={() => setEditOpen(true)}
             >
               Edit Profile
@@ -74,7 +76,7 @@ const ProfilePage = () => {
                     toast.success("Code copied!");
                   }}
                 >
-                  <ContentCopyIcon fontSize="inherit" />
+                  <ContentCopy fontSize="inherit" />
                 </IconButton>
               </Stack>
             </Div>

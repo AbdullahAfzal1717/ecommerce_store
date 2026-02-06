@@ -15,12 +15,21 @@ import { orderService } from "@app/_services/order.service";
 import UserStatCard from "@app/_components/storefront/userPanel/UserStatCard";
 import RecentOrdersTable from "@app/_components/storefront/userPanel/RecentOrdersTable";
 import UserSpendingChart from "@app/_components/storefront/userPanel/UserSpendingChart";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { toast } from "@app/_components/_core/MessageProvider";
 
 const UserDashboard = () => {
   const { authUser } = useAuth();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const referralLink = `${window.location.origin}/signup?ref=${authUser?.referralCode}`;
+
+  const copyToClipboard = (text, message) => {
+    navigator.clipboard.writeText(text);
+    toast.success(message);
+  };
 
   useEffect(() => {
     const fetchUserStats = async () => {
