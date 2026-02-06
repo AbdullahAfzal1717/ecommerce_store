@@ -23,6 +23,11 @@ const signupService = async (userData) => {
     formData.append("email", userData.email);
     formData.append("password", userData.password);
 
+    // NEW: Add referral code if user typed one in the form
+    if (userData.referralCode) {
+      formData.append("referralCode", userData.referralCode);
+    }
+
     if (userData.avatar) {
       formData.append("avatar", userData.avatar);
     }
