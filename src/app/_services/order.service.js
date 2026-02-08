@@ -26,4 +26,8 @@ export const orderService = {
     const response = await api.get("/orders/user-stats");
     return response.data;
   },
+  getReferralHistory: async () => {
+    const response = await api.get("/auth/referrals"); // We will create this route next
+    return response.data;
+  },
 };
