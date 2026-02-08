@@ -17,6 +17,7 @@ import RecentOrdersTable from "@app/_components/storefront/userPanel/RecentOrder
 import UserSpendingChart from "@app/_components/storefront/userPanel/UserSpendingChart";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { toast } from "@app/_components/_core/MessageProvider";
+import ReferralTable from "@app/_components/storefront/referral/ReferralTable";
 
 const UserDashboard = () => {
   const { authUser } = useAuth();
@@ -37,11 +38,13 @@ const UserDashboard = () => {
       try {
         setLoading(true);
         const res = await orderService.getUserAnalytics();
+        console.log(res);
         setData(res);
 
         // NEW: Fetch Referral History
         const refRes = await orderService.getReferralHistory();
-        setReferrals(refRes.data); // Adjust based on your API response structure
+        console.log(refRes);
+        setReferrals(refRes); // Adjust based on your API response structure
       } catch (err) {
         toast.error("We couldn't load your dashboard stats right now.");
         console.error("Dashboard Fetch Error", err);
