@@ -38,12 +38,10 @@ const UserDashboard = () => {
       try {
         setLoading(true);
         const res = await orderService.getUserAnalytics();
-        console.log(res);
         setData(res);
 
         // NEW: Fetch Referral History
         const refRes = await orderService.getReferralHistory();
-        console.log(refRes);
         setReferrals(refRes); // Adjust based on your API response structure
       } catch (err) {
         toast.error("We couldn't load your dashboard stats right now.");

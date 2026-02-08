@@ -40,7 +40,6 @@ const SignupForm = () => {
   };
 
   async function handleSignup(data) {
-    console.log(data);
     try {
       await signup({ ...data, avatar: avatarFile });
       // Redirect happens on success
