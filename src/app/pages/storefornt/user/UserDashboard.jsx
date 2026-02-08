@@ -23,6 +23,7 @@ const UserDashboard = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [referrals, setReferrals] = useState([]);
 
   const referralLink = `${window.location.origin}/auth/signup-1?ref=${authUser?.referralCode}`;
 
@@ -35,13 +36,15 @@ const UserDashboard = () => {
     const fetchUserStats = async () => {
       try {
         setLoading(true);
-        // Using the same "One API Call" strategy as Admin
         const res = await orderService.getUserAnalytics();
-        console.log(res);
         setData(res);
+
+        // NEW: Fetch Referral History
+        const refRes = await orderService.getReferralHistory();
+        setReferrals(refRes.data); // Adjust based on your API response structure
       } catch (err) {
         toast.error("We couldn't load your dashboard stats right now.");
-        console.error("User Dashboard Fetch Error", err);
+        console.error("Dashboard Fetch Error", err);
       } finally {
         setLoading(false);
       }
@@ -104,6 +107,10 @@ const UserDashboard = () => {
           <Stack spacing={4}>
             {/* Spending Graph */}
             <UserSpendingChart data={data?.spendingData} />
+
+            <Box mt={4}>
+              <ReferralTable referrals={referrals} />
+            </Box>
 
             {/* Recent Orders List */}
             <Box>
