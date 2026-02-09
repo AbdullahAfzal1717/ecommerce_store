@@ -3,6 +3,7 @@ import { Paper, Stack, Box, Typography } from "@mui/material";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import { Stars } from "@mui/icons-material";
 
 const UserStatCard = ({ title, value, type }) => {
   // Define styles based on type
@@ -10,6 +11,8 @@ const UserStatCard = ({ title, value, type }) => {
     orders: { icon: <ShoppingBagIcon />, color: "#000000" },
     shipping: { icon: <LocalShippingIcon />, color: "#1976d2" },
     wallet: { icon: <AccountBalanceWalletIcon />, color: "#2e7d32" },
+    bonus: { icon: <AccountBalanceWalletIcon />, color: "#d32f2f" }, // Red for Bonus Wallet
+    spins: { icon: <Stars />, color: "#ed6c02" },
   };
 
   const { icon, color } = config[type] || config.orders;

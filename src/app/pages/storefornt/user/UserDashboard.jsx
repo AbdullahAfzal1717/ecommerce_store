@@ -33,6 +33,14 @@ const UserDashboard = () => {
     toast.success(message);
   };
 
+  const getStatusMessage = () => {
+    if (authUser?.accountStatus === "red")
+      return "Your ID is INACTIVE. Place your first order to start earning!";
+    if (authUser?.accountStatus === "yellow")
+      return "Order Pending! Once delivered, your ID turns GREEN.";
+    return "You are a Verified GREEN Member! Keep referring to earn more.";
+  };
+
   useEffect(() => {
     const fetchUserStats = async () => {
       try {
@@ -69,6 +77,32 @@ const UserDashboard = () => {
 
   return (
     <Box sx={{ p: { xs: 2, md: 4 } }}>
+      <Paper
+        elevation={0}
+        sx={{
+          p: 2,
+          mb: 4,
+          borderRadius: 4,
+          bgcolor: authUser?.accountStatus === "green" ? "#e8f5e9" : "#fff3e0",
+          border: "1px solid",
+          borderColor:
+            authUser?.accountStatus === "green"
+              ? "success.light"
+              : "warning.light",
+        }}
+      >
+        <Typography
+          variant="body2"
+          fontWeight="700"
+          color={
+            authUser?.accountStatus === "green"
+              ? "success.main"
+              : "warning.main"
+          }
+        >
+          🚀 {getStatusMessage()}
+        </Typography>
+      </Paper>
       <Box mb={4}>
         <Typography variant="h4" fontWeight="900" letterSpacing={-0.5}>
           Hello, {authUser?.username}!
@@ -80,25 +114,32 @@ const UserDashboard = () => {
 
       {/* Stats Row */}
       <Grid container spacing={3} mb={5}>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <UserStatCard
-            title="Orders Placed"
-            value={data?.summary?.totalOrders || 0}
-            type="orders"
+            title="Wallet Balance"
+            value={`Rs. ${authUser?.walletBalance || 0}`}
+            type="bonus"
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <UserStatCard
-            title="Active Shipments"
-            value={data?.summary?.activeOrders || 0}
-            type="shipping"
+            title="Lucky Spins"
+            value={authUser?.availableSpins || 0}
+            type="spins"
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <UserStatCard
             title="Total Spent"
             value={`Rs. ${data?.summary?.totalSpent || 0}`}
             type="wallet"
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <UserStatCard
+            title="Orders"
+            value={data?.summary?.totalOrders || 0}
+            type="orders"
           />
         </Grid>
       </Grid>

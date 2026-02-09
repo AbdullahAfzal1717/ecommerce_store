@@ -25,6 +25,7 @@ const schema = yup.object().shape({
 
 const EditProfileDialog = ({ open, onClose }) => {
   const { authUser, updateAuthUser } = useAuth();
+  console.log(authUser);
   const [loading, setLoading] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
   const [preview, setPreview] = useState(authUser?.avatar || "");
@@ -95,6 +96,22 @@ const EditProfileDialog = ({ open, onClose }) => {
               defaultValue={authUser?.username}
               fullWidth
             />
+            <Stack direction="row" spacing={2} width="100%">
+              <JumboInput
+                fieldName="walletBalance"
+                label="Current Balance"
+                defaultValue={`Rs. ${authUser?.walletBalance}`}
+                disabled
+                fullWidth
+              />
+              <JumboInput
+                fieldName="accountStatus"
+                label="ID Status"
+                defaultValue={authUser?.accountStatus?.toUpperCase()}
+                disabled
+                fullWidth
+              />
+            </Stack>
             <JumboInput
               fieldName="email"
               label="Email Address"
