@@ -7,10 +7,13 @@ import {
   Divider,
   Paper,
   Box,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import { useCart } from "@app/_components/_core/CartProvider/hooks";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 
 // IMPORT SUB-COMPONENTS
 import StripePaymentForm from "@app/_components/storefront/checkout/StripePaymentForm";
@@ -24,11 +27,17 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 const CheckoutPage = () => {
   const { cartItems, total, updateQuantity, removeItem } = useCart();
   const { authUser } = useAuth();
+  const [useWallet, setUseWallet] = React.useState(false);
+
+  // WALLET CALCULATIONS
+  const availableWallet = authUser?.walletBalance || 0;
+  const walletDeduction = useWallet ? Math.min(availableWallet, total) : 0;
+  const amountToPayStripe = total - walletDeduction;
 
   const [shippingInfo, setShippingInfo] = React.useState({
-    firstName: authUser?.username?.split(" ")[0] || "", // Basic split for name
+    firstName: authUser?.username?.split(" ")[0] || "",
     lastName: authUser?.username?.split(" ")[1] || "N/A",
-    email: authUser?.email || "", // Crucial to include this
+    email: authUser?.email || "",
     address: "",
     city: "",
     phoneNumber: "",
@@ -84,48 +93,83 @@ const CheckoutPage = () => {
               <Typography variant="h5" fontWeight="700" mb={3}>
                 Order Summary
               </Typography>
+
+              {/* WALLET SELECTION SECTION */}
+              {availableWallet > 0 && (
+                <Box
+                  sx={{
+                    mb: 3,
+                    p: 2,
+                    borderRadius: 2,
+                    bgcolor: useWallet ? "primary.lighter" : "#f0f0f0",
+                    border: "1px dashed",
+                    borderColor: useWallet ? "primary.main" : "#ccc",
+                  }}
+                >
+                  <Stack direction="row" alignItems="center" spacing={1} mb={1}>
+                    <AccountBalanceWalletIcon
+                      color="primary"
+                      fontSize="small"
+                    />
+                    <Typography variant="subtitle2" fontWeight="700">
+                      Wallet Balance
+                    </Typography>
+                  </Stack>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={useWallet}
+                        onChange={(e) => setUseWallet(e.target.checked)}
+                        size="small"
+                      />
+                    }
+                    label={`Apply Rs. ${availableWallet.toFixed(2)}`}
+                  />
+                </Box>
+              )}
+
               <Stack spacing={2}>
                 <Stack direction="row" justifyContent="space-between">
-                  <Typography color="text.secondary">Subtotal</Typography>
-                  <Typography fontWeight="700">${total.toFixed(2)}</Typography>
-                </Stack>
-                <Stack direction="row" justifyContent="space-between">
-                  <Typography color="text.secondary">Shipping</Typography>
-                  <Typography color="success.main" fontWeight="700">
-                    Free
+                  <Typography color="text.secondary">Cart Subtotal</Typography>
+                  <Typography fontWeight="700">
+                    Rs. {total.toFixed(2)}
                   </Typography>
                 </Stack>
+
+                {useWallet && (
+                  <Stack direction="row" justifyContent="space-between">
+                    <Typography color="error.main">Wallet Deduction</Typography>
+                    <Typography color="error.main" fontWeight="700">
+                      - Rs. {walletDeduction.toFixed(2)}
+                    </Typography>
+                  </Stack>
+                )}
+
                 <Divider sx={{ my: 1 }} />
+
                 <Stack direction="row" justifyContent="space-between">
                   <Typography variant="h5" fontWeight="800">
-                    Total
+                    Payable
                   </Typography>
                   <Typography variant="h5" fontWeight="800" color="primary">
-                    ${total.toFixed(2)}
+                    Rs. {amountToPayStripe.toFixed(2)}
                   </Typography>
                 </Stack>
               </Stack>
 
+              {/* PASSING DEDUCTION TO FORM */}
               <StripePaymentForm
-                total={total}
+                total={total} // The original cart total
+                payableTotal={amountToPayStripe} // The actual charge for Stripe
+                walletAmountApplied={walletDeduction} // To be saved in DB
                 shippingInfo={shippingInfo}
                 isFormValid={isFormValid}
                 onSuccess={() => setIsSuccessOpen(true)}
               />
 
               <Box sx={{ mt: 4, textAlign: "center" }}>
-                <Box
-                  component="img"
-                  src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg"
-                  sx={{ height: 25, opacity: 0.6 }}
-                />
-                <Typography
-                  variant="caption"
-                  display="block"
-                  color="text.secondary"
-                  mt={1}
-                >
-                  Guaranteed safe & secure checkout
+                <Typography variant="caption" color="text.secondary">
+                  Secured by Stripe | NUML E-Store
                 </Typography>
               </Box>
             </Paper>

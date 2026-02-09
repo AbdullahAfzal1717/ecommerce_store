@@ -1,92 +1,31 @@
 import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  Avatar,
-  Typography,
-  Stack,
-  Button,
-  Divider,
-  Box,
-  IconButton,
-} from "@mui/material";
-import { Edit, ContentCopy } from "@mui/icons-material";
+import { Typography, Grid } from "@mui/material";
 import { Div } from "@jumbo/shared";
 import { useAuth } from "@app/_components/_core/AuthProvider/hooks";
 import EditProfileDialog from "@app/_components/admin/profile/EditProfileDialog";
-import { toast } from "@app/_components/_core/MessageProvider";
+import ProfileHeader from "@app/_components/admin/profile/ProfileHeader";
+import ProfileDetails from "@app/_components/admin/profile/ProfileDetails";
 
 const ProfilePage = () => {
   const { authUser } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
 
   return (
-    <Div sx={{ p: 4 }}>
-      <Typography variant="h2" mb={4}>
-        My Profile
+    <Div sx={{ p: { xs: 2, md: 4 } }}>
+      <Typography variant="h2" mb={4} fontWeight="800">
+        Account Settings
       </Typography>
-      <Card sx={{ maxWidth: 600, mx: "auto" }}>
-        <CardContent>
-          <Stack alignItems="center" spacing={2} mb={4}>
-            <Avatar
-              src={authUser?.avatar}
-              sx={{
-                width: 120,
-                height: 120,
-                border: "4px solid",
-                borderColor: "primary.main",
-              }}
-            />
-            <Box textAlign="center">
-              <Typography variant="h3">{authUser?.username}</Typography>
-              <Typography color="text.secondary">{authUser?.email}</Typography>
-            </Box>
-            <Button
-              variant="outlined"
-              startIcon={<Edit />}
-              onClick={() => setEditOpen(true)}
-            >
-              Edit Profile
-            </Button>
-          </Stack>
-          <Divider />
-          <Stack spacing={2} mt={3}>
-            <Div sx={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography fontWeight="bold">Account ID:</Typography>
-              <Typography color="text.secondary">{authUser?.id}</Typography>
-            </Div>
-            {/* Add more profile fields here if needed */}
-            <Divider sx={{ my: 1 }} />
-            {authUser?.referralCode ? (
-              <Div
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Typography fontWeight="bold">Referral Code:</Typography>
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <Typography color="primary.main" fontWeight="bold">
-                    {authUser?.referralCode}
-                  </Typography>
-                  <IconButton
-                    size="small"
-                    onClick={() => {
-                      navigator.clipboard.writeText(authUser?.referralCode);
-                      toast.success("Code copied!");
-                    }}
-                  >
-                    <ContentCopy fontSize="inherit" />
-                  </IconButton>
-                </Stack>
-              </Div>
-            ) : (
-              ""
-            )}
-          </Stack>
-        </CardContent>
-      </Card>
+
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={5}>
+          <ProfileHeader user={authUser} onEdit={() => setEditOpen(true)} />
+        </Grid>
+
+        <Grid item xs={12} md={7}>
+          <ProfileDetails user={authUser} />
+        </Grid>
+      </Grid>
+
       <EditProfileDialog open={editOpen} onClose={() => setEditOpen(false)} />
     </Div>
   );

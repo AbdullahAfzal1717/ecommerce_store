@@ -20,7 +20,7 @@ import { toast } from "@app/_components/_core/MessageProvider";
 import ReferralTable from "@app/_components/storefront/referral/ReferralTable";
 
 const UserDashboard = () => {
-  const { authUser } = useAuth();
+  const { authUser, revalidate } = useAuth();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -45,6 +45,8 @@ const UserDashboard = () => {
     const fetchUserStats = async () => {
       try {
         setLoading(true);
+
+        await revalidate();
         const res = await orderService.getUserAnalytics();
         setData(res);
 

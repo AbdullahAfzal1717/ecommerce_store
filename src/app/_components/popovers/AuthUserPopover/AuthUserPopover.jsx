@@ -27,14 +27,18 @@ const AuthUserPopover = () => {
   const [editOpen, setEditOpen] = useState(false);
   const navigate = useNavigate();
 
-  const isAdmin = authUser?.role === "admin" || authUser?.role === "Admin";
+  // Normalize role check
+  const isAdmin = authUser?.role?.toLowerCase() === "admin";
 
-  async function handleLogout() {
-    if (authUser) {
-      await logout();
-    }
-    return navigate("/auth/login-1");
-  }
+  const handleLogout = async () => {
+    await logout();
+    navigate("/auth/login-1");
+  };
+
+  const navigateToProfile = () => {
+    // Assuming your profile route is /user/profile or /account
+    navigate("/account/profile");
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -43,79 +47,117 @@ const AuthUserPopover = () => {
           <Avatar
             src={authUser?.avatar}
             sizes={"small"}
-            sx={{ boxShadow: 23, cursor: "pointer" }}
+            sx={{ boxShadow: 3, cursor: "pointer", border: "1px solid #eee" }}
           />
         }
         sx={{ ml: 3 }}
       >
+        {/* CLICKABLE HEADER SECTION */}
         <Div
+          onClick={navigateToProfile}
           sx={{
             display: "flex",
             alignItems: "center",
             flexDirection: "column",
-            p: (theme) => theme.spacing(2.5),
+            p: 2.5,
+            cursor: "pointer",
+            "&:hover": { bgcolor: "action.hover" },
+            transition: "background 0.2s",
           }}
         >
           <Avatar
             src={authUser?.avatar}
             alt={authUser?.username}
-            sx={{ width: 60, height: 60, mb: 2 }}
+            sx={{
+              width: 60,
+              height: 60,
+              mb: 2,
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+            }}
           />
-          <Typography variant={"h5"}>{authUser?.username}</Typography>
-          <Typography variant={"body1"} color="text.secondary">
+          <Typography variant={"h5"} fontWeight="700">
+            {authUser?.username}
+          </Typography>
+          <Typography variant={"body2"} color="text.secondary">
             {authUser?.email}
           </Typography>
         </Div>
+
         <Divider />
+
         <nav>
-          <List disablePadding sx={{ pb: 1 }}>
-            {/* PERSONAL AREA: Accessible by everyone */}
+          <List disablePadding sx={{ py: 1 }}>
+            {/* Quick Profile Link */}
             <ListItemButton onClick={() => navigate("/account")}>
-              <ListItemIcon>
-                <PersonOutlineIcon />
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                <PersonOutlineIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText primary="My Account" />
+              <ListItemText
+                primary="My Profile"
+                primaryTypographyProps={{ variant: "body2" }}
+              />
             </ListItemButton>
 
             <ListItemButton onClick={() => navigate("/account/orders")}>
-              <ListItemIcon>
-                <ShoppingBagOutlinedIcon />
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                <ShoppingBagOutlinedIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText primary="My Orders" />
+              <ListItemText
+                primary="My Orders"
+                primaryTypographyProps={{ variant: "body2" }}
+              />
             </ListItemButton>
 
-            <Divider sx={{ my: 1 }} />
-
-            {/* ADMIN ONLY QUICK LINK: Jump to management panel */}
+            {/* ADMIN ONLY QUICK LINK */}
             {isAdmin && (
               <ListItemButton
                 onClick={() => navigate("/admin")}
-                sx={{ color: "primary.main", bgcolor: "primary.lighter" }}
+                sx={{
+                  my: 0.5,
+                  color: "secondary.main",
+                  bgcolor: "secondary.lighter",
+                  "&:hover": { bgcolor: "secondary.light", color: "white" },
+                }}
               >
-                <ListItemIcon>
-                  <DashboardCustomizeOutlinedIcon color="primary" />
+                <ListItemIcon sx={{ minWidth: 40 }}>
+                  <DashboardCustomizeOutlinedIcon
+                    fontSize="small"
+                    color="inherit"
+                  />
                 </ListItemIcon>
-                <ListItemText primary="Admin Panel" />
+                <ListItemText
+                  primary="Admin Panel"
+                  primaryTypographyProps={{
+                    variant: "body2",
+                    fontWeight: "bold",
+                  }}
+                />
               </ListItemButton>
             )}
 
-            <ListItemButton onClick={() => setEditOpen(true)}>
-              <ListItemIcon>
-                <EditOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText primary="Edit Profile" />
-            </ListItemButton>
+            <Divider sx={{ my: 1 }} />
 
-            <ListItemButton onClick={handleLogout}>
-              <ListItemIcon sx={{ minWidth: 36 }}>
-                <LogoutIcon />
+            <ListItemButton onClick={() => setEditOpen(true)}>
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                <EditOutlinedIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText
-                primary={`${authUser ? "Logout" : "Login"}`}
-                sx={{ my: 0 }}
+                primary="Settings"
+                primaryTypographyProps={{ variant: "body2" }}
+              />
+            </ListItemButton>
+
+            <ListItemButton onClick={handleLogout} sx={{ color: "error.main" }}>
+              <ListItemIcon sx={{ minWidth: 40, color: "inherit" }}>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText
+                primary="Logout"
+                primaryTypographyProps={{ variant: "body2" }}
               />
             </ListItemButton>
           </List>
+
           <EditProfileDialog
             open={editOpen}
             onClose={() => setEditOpen(false)}

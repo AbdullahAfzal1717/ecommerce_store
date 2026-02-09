@@ -4,6 +4,7 @@ import { eraseCookie, getCookie, setCookie } from "@jumbo/utilities/cookies";
 import axios from "axios";
 import { toast } from "@app/_components/_core/MessageProvider"; // Ensure this path is correct
 import api from "@app/_services/api";
+import { userService } from "@app/_services/user.service";
 
 const loginService = async (login, password) => {
   try {
@@ -62,6 +63,21 @@ export function AuthProvider({ children }) {
 
       // SUCCESS MESSAGE
       toast.success(`Welcome back, ${authData.user.username}!`);
+    }
+  };
+
+  const revalidate = async () => {
+    try {
+      // 1. Call a 'me' endpoint to get fresh data from DB
+      const freshUser = await userService.getMe();
+
+      // 2. Update the cookie and state using your existing helper
+      updateAuthUser(freshUser.user);
+
+      return freshUser.user;
+    } catch (error) {
+      toast.error("Failed to fetch your data");
+      console.error("Failed to sync auth user:", error);
     }
   };
 
@@ -138,6 +154,7 @@ export function AuthProvider({ children }) {
         logout,
         signup,
         updateAuthUser,
+        revalidate,
       }}
     >
       {children}
