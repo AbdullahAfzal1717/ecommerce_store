@@ -38,7 +38,7 @@ const data = [
 ];
 
 const LuckySpinPage = () => {
-  const { authUser, updateAuthUser } = useAuth(); // Assuming updateAuthUser refreshes the local state
+  const { authUser, updateAuthUser, revalidate } = useAuth(); // Assuming updateAuthUser refreshes the local state
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -48,10 +48,10 @@ const LuckySpinPage = () => {
       toast.error("You don't have any spins left!");
       return;
     }
-
     setLoading(true);
+
     try {
-      const result = await spinService.executeSpin();
+      const result = await spinService.executeSpin(revalidate);
 
       // Find the index in our 'data' array that matches the backend prize string
       // e.g., if backend returns "Rs. 5", we find index 0

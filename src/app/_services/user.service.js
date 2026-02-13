@@ -1,7 +1,7 @@
 import api from "./api"; // Your axios instance
 
 export const userService = {
-  updateProfile: async (data) => {
+  updateProfile: async (data, revalidate) => {
     const formData = new FormData();
     formData.append("username", data.username);
     formData.append("email", data.email);
@@ -13,6 +13,10 @@ export const userService = {
     const response = await api.put("/auth/update-profile", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
+
+    if (response.data && typeof revalidate === "function") {
+      await revalidate();
+    }
 
     return response.data;
   },

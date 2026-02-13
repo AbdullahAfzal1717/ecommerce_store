@@ -6,14 +6,20 @@ export const orderService = {
     return response.data;
   },
 
-  placeOrder: async (orderData) => {
+  placeOrder: async (orderData, revalidate) => {
     const response = await api.post("/orders/place-order", orderData);
+    if (response.data && typeof revalidate === "function") {
+      await revalidate();
+    }
     return response.data;
   },
   getMyOrders: () => api.get("/orders/my-orders"),
 
-  updateStatus: async (orderId, status) => {
+  updateStatus: async (orderId, status, revalidate) => {
     const response = await api.patch(`/orders/${orderId}/status`, { status });
+    if (response.data && typeof revalidate === "function") {
+      await revalidate();
+    }
     return response.data;
   },
   getDashboardAnalytics: async () => {

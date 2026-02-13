@@ -25,7 +25,7 @@ const schema = yup.object().shape({
 });
 
 const EditProfileDialog = ({ open, onClose }) => {
-  const { authUser, updateAuthUser } = useAuth();
+  const { authUser, updateAuthUser, revalidate } = useAuth();
   const [loading, setLoading] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
   const [preview, setPreview] = useState(authUser?.avatar || "");
@@ -52,7 +52,7 @@ const EditProfileDialog = ({ open, onClose }) => {
         avatar: avatarFile, // Pass the file object
       };
 
-      const result = await userService.updateProfile(updateData);
+      const result = await userService.updateProfile(updateData, revalidate);
       updateAuthUser(result.data.user);
       toast.success("Profile updated successfully!");
       onClose();
