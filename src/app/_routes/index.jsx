@@ -30,6 +30,7 @@ import CheckoutPage from "@app/pages/storefornt/checkout/CheckoutPage";
 import UserOrdersPage from "@app/pages/storefornt/user/UserOrdersPage"; // Create this next
 import UserDashboard from "@app/pages/storefornt/user/UserDashboard"; // Create this next
 import AdminDashboard from "@app/pages/admin/dashboard/AdminDashboard";
+import SettingsPage from "@app/pages/admin/settings/SettingsPage";
 
 const routes = [
   // 1. STOREFRONT & USER ACCOUNT
@@ -67,6 +68,7 @@ const routes = [
       { path: "products", element: <ProductPage /> },
       { path: "profile", element: <ProfilePage /> },
       { path: "orders", element: <AdminOrdersPage /> },
+      { path: "settings", element: <SettingsPage /> },
     ],
   },
 

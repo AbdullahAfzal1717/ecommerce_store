@@ -12,6 +12,7 @@ import {
 import {
   DashboardCustomizeOutlined,
   AccountCircleOutlined,
+  LoginOutlined,
 } from "@mui/icons-material";
 import CartHeaderIcon from "../Header/components/CartIcon/CartIcon";
 import { AuthUserPopover } from "@app/_components/popovers/AuthUserPopover";
@@ -22,7 +23,7 @@ function StoreHeader() {
   const navigate = useNavigate();
   const { authUser } = useAuth();
 
-  const isAdmin = authUser?.role === "admin" || authUser?.role === "Admin";
+  const isAdmin = authUser?.role?.toLowerCase() === "admin";
   const isLoggedIn = !!authUser;
 
   return (
@@ -59,10 +60,6 @@ function StoreHeader() {
           <Stack direction="row" spacing={2} alignItems="center">
             {isLoggedIn && (
               <>
-                {/* PROFESSIONAL LOGIC:
-                  If Admin: Show link to Admin Panel.
-                  If User: Show link to Personal Account.
-                */}
                 <Tooltip
                   title={isAdmin ? "Go to Admin Panel" : "Go to My Account"}
                 >
@@ -88,7 +85,6 @@ function StoreHeader() {
                   </Button>
                 </Tooltip>
 
-                {/* Mobile Icon Toggle */}
                 <IconButton
                   sx={{ display: { xs: "flex", sm: "none" } }}
                   onClick={() => navigate(isAdmin ? "/admin" : "/account")}
@@ -102,8 +98,28 @@ function StoreHeader() {
               </>
             )}
 
+            {/* CART ICON ALWAYS VISIBLE */}
             <CartHeaderIcon />
-            <AuthUserPopover />
+
+            {/* UPDATED AUTH LOGIC FOR STORE HEADER */}
+            {isLoggedIn ? (
+              <AuthUserPopover />
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<LoginOutlined />}
+                onClick={() => navigate("/auth/login-1")}
+                sx={{
+                  borderRadius: "8px",
+                  textTransform: "none",
+                  fontWeight: "bold",
+                  px: 3,
+                }}
+              >
+                Login
+              </Button>
+            )}
           </Stack>
         </Toolbar>
       </Container>

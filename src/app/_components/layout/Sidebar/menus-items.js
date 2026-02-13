@@ -27,6 +27,10 @@ export function getMenus(pathname) {
             path: "/admin/orders",
             label: "Customer Orders",
           },
+          {
+            path: "/admin/settings",
+            label: "Draw Settings",
+          },
           { path: "/", label: "Back to Shop" },
         ],
       },

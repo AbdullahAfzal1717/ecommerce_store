@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { Save, Percent, Casino } from "@mui/icons-material";
 import { toast } from "@app/_components/_core/MessageProvider";
-import { adminService } from "@app/_services/admin.service"; // Assume you have this service
+import { settingsService } from "@app/_services/settings.category";
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState({
@@ -29,7 +29,7 @@ const SettingsPage = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await adminService.getGlobalSettings();
+        const response = await settingsService.getGlobalSettings();
         if (response.data) {
           setSettings(response.data);
         }
@@ -46,7 +46,7 @@ const SettingsPage = () => {
   const handleSave = async () => {
     setLoading(true);
     try {
-      await adminService.updateGlobalSettings(settings);
+      await settingsService.updateGlobalSettings(settings);
       toast.success("Global settings updated successfully!");
     } catch (error) {
       toast.error(error.message || "Failed to save settings");
