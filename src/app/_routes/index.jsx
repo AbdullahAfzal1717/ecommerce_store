@@ -31,6 +31,7 @@ import UserOrdersPage from "@app/pages/storefornt/user/UserOrdersPage"; // Creat
 import UserDashboard from "@app/pages/storefornt/user/UserDashboard"; // Create this next
 import AdminDashboard from "@app/pages/admin/dashboard/AdminDashboard";
 import SettingsPage from "@app/pages/admin/settings/SettingsPage";
+import LuckySpinPage from "@app/pages/storefornt/luckySpin/LuckySpinPage";
 
 const routes = [
   // 1. STOREFRONT & USER ACCOUNT
@@ -55,6 +56,7 @@ const routes = [
       { path: "", element: <UserDashboard /> },
       { path: "orders", element: <UserOrdersPage /> },
       { path: "profile", element: <ProfilePage /> }, // Reusing ProfilePage CRUD
+      { path: "spins", element: <LuckySpinPage /> },
     ],
   },
   // 2. ADMIN DASHBOARD
