@@ -43,6 +43,22 @@ const wheelData = [
   },
 ];
 
+const StatCard = ({ label, value, color = "text.primary" }) => (
+  <Box>
+    <Typography
+      variant="caption"
+      display="block"
+      color="text.secondary"
+      fontWeight="500"
+    >
+      {label}
+    </Typography>
+    <Typography variant="h4" fontWeight="bold" color={color}>
+      {value}
+    </Typography>
+  </Box>
+);
+
 const LuckySpinPage = () => {
   const { authUser, revalidate } = useAuth();
   const [mustSpin, setMustSpin] = useState(false);
