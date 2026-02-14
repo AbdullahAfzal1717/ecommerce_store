@@ -148,9 +148,7 @@ const LuckySpinPage = () => {
               zIndex: 10,
               fontSize: "40px",
             }}
-          >
-            👇
-          </Box>
+          ></Box>
         </Box>
 
         <Button
