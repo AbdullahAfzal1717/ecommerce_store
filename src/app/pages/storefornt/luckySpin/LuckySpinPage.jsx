@@ -20,9 +20,9 @@ import { useAuth } from "@app/_components/_core/AuthProvider/hooks";
 import { toast } from "@app/_components/_core/MessageProvider";
 
 const wheelData = [
-  { option: "Rs. 20", style: { backgroundColor: "#f8f9fa", textColor: "#333" } },
+  { option: "Rs. 5", style: { backgroundColor: "#f8f9fa", textColor: "#333" } },
   {
-    option: "Rs. 200",
+    option: "Rs. 20",
     style: { backgroundColor: "#1976d2", textColor: "#fff" },
   },
   {
@@ -30,7 +30,7 @@ const wheelData = [
     style: { backgroundColor: "#333", textColor: "#fff" },
   },
   {
-    option: "Rs. 0",
+    option: "Rs. 50",
     style: { backgroundColor: "#f8f9fa", textColor: "#333" },
   },
   {
@@ -38,7 +38,7 @@ const wheelData = [
     style: { backgroundColor: "#ffc107", textColor: "#000" },
   },
   {
-    option: "Rs. 100",
+    option: "Rs. 10",
     style: { backgroundColor: "#1976d2", textColor: "#fff" },
   },
 ];
