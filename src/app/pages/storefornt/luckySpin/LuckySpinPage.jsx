@@ -34,7 +34,7 @@ const wheelData = [
     style: { backgroundColor: "#f8f9fa", textColor: "#333" },
   },
   {
-    option: "JACKPOT",
+    option: "Rs. 500",
     style: { backgroundColor: "#ffc107", textColor: "#000" },
   },
   {
@@ -76,13 +76,17 @@ const LuckySpinPage = () => {
     try {
       // SOLUTION 2: Pass revalidate here. It refreshes user data in background.
       const result = await spinService.executeSpin(revalidate);
+      console.log("result", result);
 
       const prizeIndex = wheelData.findIndex((item) =>
-        item.option.includes(result.data.prize.split(" ")[0])
+        item.option.includes(result.data.prize.split(" ")[1])
       );
+      console.log("prizeIndex", prizeIndex);
 
       const finalIndex = prizeIndex === -1 ? 2 : prizeIndex;
+      console.log("finalIndex", finalIndex);
       setPrizeNumber(finalIndex);
+      console.log("prize number", prizeNumber);
       setWinData(result.data); // Store winning info for the popup
       setMustSpin(true);
     } catch (error) {
@@ -115,10 +119,6 @@ const LuckySpinPage = () => {
             label="AVAILABLE SPINS"
             value={authUser?.availableSpins || 0}
             color="secondary.main"
-          />
-          <StatCard
-            label="WALLET BALANCE"
-            value={`Rs. ${authUser?.walletBalance || 0}`}
           />
         </Stack>
 
