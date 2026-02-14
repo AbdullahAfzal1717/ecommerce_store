@@ -10,6 +10,7 @@ import {
   Divider,
 } from "@mui/material";
 import api from "@app/_services/api";
+import { userService } from "@app/_services/user.service";
 
 const ReferralTreePage = () => {
   const [treeData, setTreeData] = useState(null);
@@ -18,8 +19,8 @@ const ReferralTreePage = () => {
   useEffect(() => {
     const fetchTree = async () => {
       try {
-        const response = await api.get("/auth/referral-tree");
-        setTreeData(response.data.data);
+        const response = await userService.getMyReferralTree();
+        setTreeData(response.data);
       } catch (error) {
         console.error("Error fetching tree:", error);
       } finally {

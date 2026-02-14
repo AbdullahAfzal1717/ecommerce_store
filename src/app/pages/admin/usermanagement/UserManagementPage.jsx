@@ -22,6 +22,7 @@ import {
 import { Close, AccountTree, Person } from "@mui/icons-material";
 import Tree from "react-d3-tree";
 import api from "@app/_services/api";
+import { userService } from "@app/_services/user.service";
 
 // Transition for the Modal
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -35,15 +36,15 @@ const UserManagementPage = () => {
 
   useEffect(() => {
     // Fetch all users for the admin list
-    api.get("/auth/all-users").then((res) => setUsers(res.data.data));
+    userService.getAllUsers().then((res) => setUsers(res.data));
   }, []);
 
   const handleViewTree = async (userId) => {
     console.log(userId);
     try {
-      const response = await api.get(`/auth/tree/${userId}`);
+      const response = await userService.getUserTreeForAdmin(userId);
       console.log("response", response);
-      setSelectedTreeData(response.data.data);
+      setSelectedTreeData(response.data);
       setOpenTree(true);
     } catch (error) {
       console.error("Failed to load tree");
