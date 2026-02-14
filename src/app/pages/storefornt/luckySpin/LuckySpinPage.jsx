@@ -30,7 +30,7 @@ const wheelData = [
     style: { backgroundColor: "#333", textColor: "#fff" },
   },
   {
-    option: "Rs. 50",
+    option: "Rs. 0",
     style: { backgroundColor: "#f8f9fa", textColor: "#333" },
   },
   {
