@@ -36,7 +36,6 @@ function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log(authUser);
 
   const isBelowLg = useMediaQuery(
     theme.breakpoints.down(headerOptions?.drawerBreakpoint ?? "xl")

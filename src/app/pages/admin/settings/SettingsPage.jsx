@@ -32,7 +32,6 @@ const SettingsPage = () => {
     const fetchSettings = async () => {
       try {
         const response = await settingsService.getGlobalSettings();
-        console.log(response)
         if (response.data) {
           setSettings(response.data);
         }

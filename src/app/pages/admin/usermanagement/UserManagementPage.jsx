@@ -40,10 +40,8 @@ const UserManagementPage = () => {
   }, []);
 
   const handleViewTree = async (userId) => {
-    console.log(userId);
     try {
       const response = await userService.getUserTreeForAdmin(userId);
-      console.log("response", response);
       setSelectedTreeData(response.data);
       setOpenTree(true);
     } catch (error) {

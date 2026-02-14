@@ -76,17 +76,13 @@ const LuckySpinPage = () => {
     try {
       // SOLUTION 2: Pass revalidate here. It refreshes user data in background.
       const result = await spinService.executeSpin(revalidate);
-      console.log("result", result);
 
       const prizeIndex = wheelData.findIndex((item) =>
         item.option.includes(result.data.prize.split(" ")[1])
       );
-      console.log("prizeIndex", prizeIndex);
 
       const finalIndex = prizeIndex === -1 ? 2 : prizeIndex;
-      console.log("finalIndex", finalIndex);
       setPrizeNumber(finalIndex);
-      console.log("prize number", prizeNumber);
       setWinData(result.data); // Store winning info for the popup
       setMustSpin(true);
     } catch (error) {

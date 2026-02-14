@@ -32,7 +32,6 @@ export const userService = {
   // --- Admin Functions ---
   getAllUsers: async () => {
     const response = await api.get("/auth/all-users");
-    console.log(response);
     return response.data; // returns { success: true, data: [user1, user2...] }
   },
 
