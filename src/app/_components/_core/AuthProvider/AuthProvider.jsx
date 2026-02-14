@@ -128,20 +128,16 @@ export function AuthProvider({ children }) {
     toast.info("You have been logged out.");
   };
   React.useEffect(() => {
-    let authUserSr = getCookie("auth-user");
-    if (authUserSr) {
-      try {
-        // Decode the URI component back to a standard JSON string
-        const decodedData = JSON.parse(decodeURIComponent(authUserSr));
+    const authUserSr = getCookie("auth-user");
 
-        // Set both states
-        setAuthUser(decodedData.user);
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error("Error parsing auth cookie:", error);
-        eraseCookie("auth-user"); // Clean up corrupt cookie
-      }
+    if (authUserSr) {
+      // 1. QUICK SYNC: Set basic auth state so the user isn't redirected
+      setIsAuthenticated(true);
+
+      // 2. FRESH SYNC: Get the full, fresh data from DB
+      revalidate();
     }
+
     setLoading(false);
   }, []);
   return (
