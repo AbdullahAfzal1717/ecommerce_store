@@ -32,6 +32,7 @@ import UserDashboard from "@app/pages/storefornt/user/UserDashboard"; // Create 
 import AdminDashboard from "@app/pages/admin/dashboard/AdminDashboard";
 import SettingsPage from "@app/pages/admin/settings/SettingsPage";
 import LuckySpinPage from "@app/pages/storefornt/luckySpin/LuckySpinPage";
+import ReferralTreePage from "@app/pages/storefornt/referralTree/ReferralTreePage";
 
 const routes = [
   // 1. STOREFRONT & USER ACCOUNT
@@ -57,6 +58,7 @@ const routes = [
       { path: "orders", element: <UserOrdersPage /> },
       { path: "profile", element: <ProfilePage /> }, // Reusing ProfilePage CRUD
       { path: "spins", element: <LuckySpinPage /> },
+      { path: "tree", element: <ReferralTreePage /> },
     ],
   },
   // 2. ADMIN DASHBOARD

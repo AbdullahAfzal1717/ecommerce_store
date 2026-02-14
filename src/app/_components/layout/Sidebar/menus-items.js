@@ -52,6 +52,7 @@ export function getMenus(pathname) {
         },
         { path: "/account/profile", label: "My Profile" },
         { path: "/account/spins", label: "Lucky Spins" },
+        { path: "/account/tree", label: "Referrals" },
 
         { path: "/", label: "Continue Shopping" },
       ],
