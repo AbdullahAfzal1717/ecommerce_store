@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getCookieValue } from "@jumbo/utilities/cookies";
 
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API_BASE_URL || 'http://localhost:5050/api/v1', // Default to localhost if not set
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'https://ecommerce-store-backend-flame.vercel.app/api/v1',
 });
 
 api.interceptors.request.use((config) => {

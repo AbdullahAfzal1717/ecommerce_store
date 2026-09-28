@@ -3,6 +3,7 @@ import { Box, Typography, Grid, CircularProgress, Button } from "@mui/material";
 import { productService } from "@app/_services/product.service";
 import ProductCard from "../products/ProductCard";
 import { useNavigate } from "react-router-dom";
+import { toast } from "@app/_components/_core/MessageProvider";
 
 const NewArrivals = () => {
   const [products, setProducts] = useState([]);
