@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getCookieValue } from "@jumbo/utilities/cookies";
 
 const api = axios.create({
-    baseURL: 'http://localhost:5050/api/v1',
+    baseURL: import.meta.env.REACT_APP_API_BASE_URL || 'http://localhost:5050/api/v1', // Default to localhost if not set
 });
 
 api.interceptors.request.use((config) => {
